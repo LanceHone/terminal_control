@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- AccessCtrlInduModbusMapper.xml -->
+<mapper namespace="com.ruoyi.access.mapper.AccessCtrlInduModbusMapper">
+    <resultMap type="AccessPolicyInduModbus" id="ModbusResult">
+        <id property="id" column="id"/>
+        <result property="deviceId" column="device_id"/>
+        <result property="functionCode" column="function_code"/>
+        <result property="rw" column="rw"/>
+        <result property="registerAddress" column="register_address"/>
+        <result property="valueRange" column="value_range"/>
+        <result property="status" column="status"/>
+        <!-- 其他通用字段 -->
+    </resultMap>
+
+    <sql id="selectModbusVo">
+        select *
+        from access_ctrl_indu_modbus
+    </sql>
+
+    <select id="selectList" resultMap="ModbusResult">
+        <include refid="selectModbusVo"/>
+        <where>
+            <if test="deviceId != null">and device_id = #{deviceId}</if>
+            <if test="registerAddress != null">and register_address = #{registerAddress}</if>
+            <if test="status != null">and status = #{status}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectById" resultMap="ModbusResult">
+            <include refid="selectModbusVo"/> where id = #{id}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into access_ctrl_indu_modbus (device_id, function_code, rw, register_address,
+                                             value_range, status, create_by, create_time, remark)
+        values (#{deviceId}, #{functionCode}, #{rw}, #{registerAddress},
+                #{valueRange}, #{status}, #{createBy}, #{createTime}, #{remark})
+    </insert>
+
+    <update id="update">
+        update access_ctrl_indu_modbus
+        <set>
+            <if test="deviceId != null">device_id = #{deviceId},</if>
+            <if test="functionCode != null">function_code = #{functionCode},</if>
+            <if test="rw != null">rw = #{rw},</if>
+            <if test="registerAddress != null">register_address = #{registerAddress},</if>
+            <if test="valueRange != null">value_range = #{valueRange},</if>
+            <if test="status != null">status = #{status},</if>
+            update_by = #{updateBy}, update_time = #{updateTime}
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="updateModbusStatus">
+        update access_ctrl_indu_modbus
+        set status = #{status},
+            update_by = #{updateBy},
+            update_time = #{updateTime}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteByIds">
+        delete from access_ctrl_indu_modbus where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="checkDeviceRegisterUnique" resultMap="ModbusResult">
+        <include refid="selectModbusVo"/>
+        where device_id = #{deviceId} and register_address = #{registerAddress} limit 1
+    </select>
+
+    <select id="findAllActive" resultMap="ModbusResult">
+        <include refid="selectModbusVo"/>
+        where status = 1
+    </select>
+    <select id="checkAccess" resultType="com.ruoyi.access.domain.AccessPolicyInduModbus">
+        SELECT exists(
+            SELECT 1
+            FROM access_ctrl_indu_modbus
+            WHERE device_id = #{deviceId}
+              AND function_code = #{functionCode}
+              AND rw = #{rw}
+              AND status = '0'  -- 假设状态为'0'表示正常
+            LIMIT 1
+        )
+    </select>
+</mapper>

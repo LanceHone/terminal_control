@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ruoyi.system.mapper.SysGroupMapper">
+
+    <resultMap type="SysGroup" id="SysGroupResult">
+        <id property="id" column="id"/>
+        <result property="code" column="code"/>
+        <result property="name" column="name"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectGroupBase">
+        SELECT id, code, name, create_time, update_time FROM sys_group
+    </sql>
+
+    <select id="selectGroupList" parameterType="SysGroup" resultMap="SysGroupResult">
+        <include refid="selectGroupBase"/>
+        WHERE 1=1
+        <if test="code != null and code != ''">
+            AND code LIKE CONCAT('%', #{code}, '%')
+        </if>
+        <if test="name != null and name != ''">
+            AND name LIKE CONCAT('%', #{name}, '%')
+        </if>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectGroupById" parameterType="Long" resultMap="SysGroupResult">
+        SELECT id, code, name, create_time, update_time FROM sys_group WHERE id = #{id}
+    </select>
+
+    <insert id="insertGroup" parameterType="SysGroup">
+        INSERT INTO sys_group (code, name, create_time, update_time)
+        VALUES (#{code}, #{name}, NOW(), NOW())
+    </insert>
+
+    <update id="updateGroup" parameterType="SysGroup">
+        UPDATE sys_group
+        SET code = #{code},
+            name = #{name},
+            update_time = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteGroup" parameterType="Long">
+        DELETE FROM sys_group WHERE id = #{id}
+    </delete>
+
+</mapper>

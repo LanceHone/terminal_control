@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>ruoyi</artifactId>
+        <groupId>com.ruoyi</groupId>
+        <version>3.8.9</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+<!--    <groupId>com.ruoyi</groupId>-->
+    <artifactId>security-access</artifactId>
+    <description>访问控制模块</description>
+<!--    <properties>-->
+<!--        <java.version>1.8</java.version>-->
+<!--        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>-->
+<!--        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>-->
+<!--        <spring-boot.version>2.6.13</spring-boot.version>-->
+<!--    </properties>-->
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-exec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ghgande</groupId>
+            <artifactId>j2mod</artifactId>
+        </dependency>
+        <!-- 通用工具-->
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.slytechs.jnet.jnetpcap</groupId>-->
+<!--            <artifactId>jnetpcap-wrapper</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>jnetpcap</groupId>-->
+<!--            <artifactId>jnetpcap</artifactId>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>jnetpcap</groupId>
+            <artifactId>jnetpcap</artifactId>
+            <systemPath>${project.basedir}/src/lib/jnetpcap-1.4.r1425-1g.jar</systemPath>
+            <version>1.4.r1425-1g</version>
+            <scope>system</scope>
+        </dependency>
+    </dependencies>
+    <!-- jnetpcap抓包的maven配置 -->
+    <repositories>
+        <repository>
+            <id>Clojars</id>
+            <name>Clojars</name>
+            <url>https://clojars.org/repo/</url>
+        </repository>
+    </repositories>
+</project>
