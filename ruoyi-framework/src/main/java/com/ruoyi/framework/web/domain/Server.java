@@ -1,21 +1,18 @@
 package com.ruoyi.framework.web.domain;
 
 import java.net.UnknownHostException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
+
+import cn.hutool.core.util.RuntimeUtil;
 import com.ruoyi.common.utils.Arith;
 import com.ruoyi.common.utils.ip.IpUtils;
-import com.ruoyi.framework.web.domain.server.Cpu;
-import com.ruoyi.framework.web.domain.server.Jvm;
-import com.ruoyi.framework.web.domain.server.Mem;
-import com.ruoyi.framework.web.domain.server.Sys;
-import com.ruoyi.framework.web.domain.server.SysFile;
+import com.ruoyi.framework.web.domain.server.*;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.CentralProcessor.TickType;
 import oshi.hardware.GlobalMemory;
 import oshi.hardware.HardwareAbstractionLayer;
+import oshi.hardware.NetworkIF;
 import oshi.software.os.FileSystem;
 import oshi.software.os.OSFileStore;
 import oshi.software.os.OperatingSystem;
@@ -105,10 +102,15 @@ public class Server
         this.sysFiles = sysFiles;
     }
 
+    Map<String, String> clock = new HashMap<>();
+    private List<SysNetInterface> networkIFs = new ArrayList<>();
     public void copyTo() throws Exception
     {
         SystemInfo si = new SystemInfo();
         HardwareAbstractionLayer hal = si.getHardware();
+
+        // 不要移动位置，放在这里利用setCpu时候睡一秒
+        List<NetworkIF> ifs = hal.getNetworkIFs(false);
 
         setCpuInfo(hal.getProcessor());
 
@@ -118,7 +120,42 @@ public class Server
 
         setJvmInfo();
 
+        ifs.forEach(networkIF -> {
+            long pre_bytesRecv = networkIF.getBytesRecv();
+            long pre_bytesSent = networkIF.getBytesSent();
+            networkIF.updateAttributes();
+            SysNetInterface sysNetInterface = new SysNetInterface();
+            networkIFs.add(sysNetInterface);
+            sysNetInterface.setName(networkIF.getName());
+            sysNetInterface.setDisplayName(networkIF.getDisplayName());
+            long bytesRecv = networkIF.getBytesRecv();
+            long bytesSent = networkIF.getBytesSent();
+            sysNetInterface.setBytesRecv(convertFileSize(bytesRecv));
+            sysNetInterface.setBytesSent(convertFileSize(bytesSent));
+            long upSpeed = (networkIF.getBytesSent() - pre_bytesSent);
+            long downSpeed = (networkIF.getBytesRecv() - pre_bytesRecv);
+            sysNetInterface.setUpSpeed(convertFileSize(upSpeed));
+            sysNetInterface.setDownSpeed(convertFileSize(downSpeed));
+        });
+
         setSysFiles(si.getOperatingSystem());
+
+        if (System.getProperty("os.name").contains("Win")) {
+            // FOR TEST
+            clock.put("Time zone", "Asia/Shanghai");
+            clock.put("NTP service", "inactive");
+            clock.put("RTC in local TZ", "no");
+        } else {
+            List<String> timedatectl = RuntimeUtil.execForLines("timedatectl");
+            for (String line : timedatectl) {
+                if (line.contains(":")) {
+                    String[] parts = line.split(":");
+                    String key = parts[0].trim();
+                    String value = parts[1].trim();
+                    clock.put(key, value);
+                }
+            }
+        }
     }
 
     /**

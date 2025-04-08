@@ -7,3 +7,19 @@ export function getServer() {
     method: 'get'
   })
 }
+
+// 获取服务信息
+export function timeSync(open) {
+  return request({
+    url: '/monitor/serve/time/sync/',
+    method: 'post'
+  })
+}
+
+// 获取服务信息
+export function setTimezone(open) {
+  return request({
+    url: '/monitor/serve/time/setTz/',
+    method: 'post'
+  })
+}
