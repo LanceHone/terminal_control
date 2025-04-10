@@ -48,7 +48,7 @@
         >新增
         </el-button>
       </el-col>
-      <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button
           type="info"
           plain
@@ -57,26 +57,26 @@
           @click="handleTest"
         >用例
         </el-button>
-      </el-col>
+      </el-col> -->
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <!-- 数据表格 -->
     <el-table v-loading="loading" :data="modbusList">
-      <el-table-column label="设备ID" prop="deviceId" width="150" align="center"/>
-      <el-table-column label="功能码类型" prop="functionCode" width="120" align="center">
+      <el-table-column label="设备ID" prop="deviceId" align="center"/>
+      <el-table-column label="功能码类型" prop="functionCode"  align="center">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.access_modbus_function_code" :value="scope.row.functionCode"/>
         </template>
       </el-table-column>
-      <el-table-column label="读写操作" prop="rw" width="100" align="center">
+      <el-table-column label="读写操作" prop="rw" align="center">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.access_modbus_rw" :value="scope.row.rw"/>
         </template>
       </el-table-column>
-      <el-table-column label="寄存器地址" prop="registerAddress" width="180" align="center"/>
-      <el-table-column label="值范围" prop="valueRange" width="150" align="center"/>
-      <el-table-column label="状态" prop="status" width="280" align="center">
+      <el-table-column label="寄存器地址" prop="registerAddress" align="center"/>
+      <el-table-column label="值范围" prop="valueRange"  align="center"/>
+      <el-table-column label="状态" prop="status"  align="center">
         <template slot-scope="scope">
           <el-switch
             :value="scope.row.status === '0'"
@@ -89,11 +89,11 @@
 <!--          <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status"/>-->
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" align="center" prop="createTime" width="160">
+      <!-- <el-table-column label="创建时间" align="center" prop="createTime" width="160">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -242,6 +242,9 @@ export default {
         ],
         status: [
           { required: true, message: '状态不能为空', trigger: 'change' }
+        ],
+        valueRange: [
+          { required: true, message: '值范围不能为空', trigger: 'blur' }
         ]
       },
       showCases: false

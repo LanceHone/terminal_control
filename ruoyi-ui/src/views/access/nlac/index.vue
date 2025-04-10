@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch">
+    <!-- <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch">
       <el-form-item label="源IP" prop="sourceIp">
         <el-input
           v-model="queryParams.sourceIp"
@@ -17,21 +17,21 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-<!--      <el-form-item label="状态" prop="status">-->
-<!--        <el-select v-model="queryParams.status" placeholder="状态" clearable>-->
-<!--          <el-option-->
-<!--            v-for="dict in dict.type.sys_normal_disable"-->
-<!--            :key="dict.value"-->
-<!--            :label="dict.label"-->
-<!--            :value="dict.value"-->
-<!--          />-->
-<!--        </el-select>-->
-<!--      </el-form-item>-->
+     <el-form-item label="状态" prop="status">
+       <el-select v-model="queryParams.status" placeholder="状态" clearable>
+         <el-option
+           v-for="dict in dict.type.sys_normal_disable"
+           :key="dict.value"
+           :label="dict.label"
+           :value="dict.value"
+         />
+       </el-select>
+     </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
-    </el-form>
+    </el-form> -->
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
@@ -44,7 +44,7 @@
           v-hasPermi="['access:tcp:add']"
         >新增</el-button>
       </el-col>
-      <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button
           type="info"
           plain
@@ -52,8 +52,8 @@
           size="mini"
           @click="toggleExpandAll"
         >展开/折叠</el-button>
-      </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      </el-col> -->
+      <!-- <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
 
     <el-table
@@ -64,11 +64,11 @@
       :default-expand-all="isExpandAll"
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
-      <el-table-column prop="sourceIp" label="源IP" width="200"></el-table-column>
-      <el-table-column prop="targetIp" label="目的IP" width="200"></el-table-column>
-      <el-table-column prop="sourcePort" label="源端口" width="100"></el-table-column>
-      <el-table-column prop="targetPort" label="目的端口" width="100"></el-table-column>
-      <el-table-column prop="status" label="状态" width="200">
+      <el-table-column prop="sourceIp" label="源IP" ></el-table-column>
+      <el-table-column prop="targetIp" label="目的IP"></el-table-column>
+      <el-table-column prop="sourcePort" label="源端口"></el-table-column>
+      <el-table-column prop="targetPort" label="目的端口"></el-table-column>
+      <el-table-column prop="status" label="状态">
         <template slot-scope="scope">
           <el-switch
             :value="scope.row.status === '0'"
@@ -81,11 +81,11 @@
 <!--          <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status"/>-->
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" align="center" prop="createTime" width="200">
+      <!-- <el-table-column label="创建时间" align="center" prop="createTime" width="200">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -108,7 +108,7 @@
 
     <!-- 添加或修改网络层访问控制对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+      <el-form ref="form" :model="form" label-width="80px">
         <el-row>
           <el-col :span="24">
             <el-form-item label="源IP" prop="sourceIp">

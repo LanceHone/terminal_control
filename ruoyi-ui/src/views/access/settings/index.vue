@@ -1,100 +1,69 @@
 <template>
   <div class="app-container">
-    <!-- 数据库监控页面 -->
-    <el-form :model="params" ref="queryForm" size="small" :inline="true">
-      <!-- 访问控制开关 -->
-      <el-form-item label="访问控制开关" prop="status">
-        <el-switch
-          v-model="switchStatus"
-          active-color="#13ce66"
-          inactive-color="#ff4949"
-          active-text="正常"
-          inactive-text="禁用"
-          @change="handleStatusChange"
-        />
-      </el-form-item>
-    </el-form>
+    <el-table :data="options" >
+      <el-table-column label="控制类型" align="center" prop="name">
+      </el-table-column>
+      <el-table-column label="启用" align="center" prop="enable">
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.enable"
+            @change="(value) => handleStatusChange(scope.row, value)"
+          > 
+          </el-switch>
+        </template>
+      </el-table-column>
+    </el-table>
   </div>
-
 </template>
 
 <script>
-import { getConfigInfoByKey, updateConfig } from '@/api/system/config'
+import { setting_flood_status,set_flood } from '../../../api/access/network/tcp';
+
 
 export default {
-  name: 'AccessSettings',
+  name: "Ipctl",
   data() {
     return {
-      params: {
-        configKey: 'access.switch',
-        status: '1' // 初始化状态（"0"正常，"1"禁用）
-      }
+      options : [
+      ]
     }
   },
-  computed: {
-    // 将 switch 的状态与 params.status 关联
-    switchStatus: {
-      get() {
-        return !this.params.status
-        // return this.params.status === '0'
-      },
-      set(value) {
-        this.params.status = !value
-        // this.params.status = value ? '0' : '1'
-      }
-    }
+  mounted(){
+    this.refresh()
   },
   methods: {
-    // 处理开关状态改变
-    handleStatusChange(status) {
-      // 这里可以添加接口调用逻辑
-      // 更新服务器状态
-      console.log('当前开关状态:', status ? '正常' : '禁用')
-      this.updateAccessStatus(this.params.status)
-    },
-    // 更新访问控制状态的方法
-    updateAccessStatus(status) {
-      console.log('updateAccessStatus')
-      // 调用接口更新状态
-      const payload = {
-        configId:100,//Fixme
-        configName:"访问控制开关",
-        configKey: 'access.switch',
-        configValue: status?'0':'1'
-      }
-
-      // 模拟接口请求
-      // 实际项目中替换为 axios 或其他请求方式
-      updateConfig(payload).then(response => {
-        // this.params.status = response.msg
+    refresh(){
+      setting_flood_status().then(res => {
+        this.options = res.data
       })
     },
-    // 加载数据
-    loadData() {
-      // 模拟接口请求
-      // 实际项目中替换为 axios 或其他请求方式
-      getConfigInfoByKey('access.switch').then(response => {
-        console.log('getConfigInfoByKey')
-        this.params.status = response.data.configValue=='0'
-      });
+    handleStatusChange(row,value) {
+      let key = row.name
+      switch (row.name) {
+        case '抗SYN_FLOOD攻击':
+          key = 'syn'
+          break;
+        case '抗UDP_FLOOD攻击':
+          key = 'udp'
+          break;
+        case '抗ICMP_FLOOD攻击':
+          key = 'icmp'
+          break;
+        case '抗PING_OF_DEATH攻击':
+          key = 'ping'
+          break;
+        default:
+          key = 'net'
+          break;
+      }
+      set_flood(key,value).then(res => {
+        this.$message({
+          message: "设置成功",
+          type: 'success'
+        })
+        this.refresh()
+      })
     }
-  },
-  created() {
-    // 页面加载时初始化数据
-    this.loadData()
   }
 }
 </script>
-
-<style scoped>
-.access-settings {
-  margin-bottom: 20px;
-}
-
-.other-content {
-  background-color: #f5f7fa;
-  padding: 20px;
-  border-radius: 4px;
-  min-height: 300px;
-}
-</style>

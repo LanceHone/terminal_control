@@ -1,5 +1,7 @@
 package com.ruoyi.framework.config;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -46,6 +48,14 @@ public class RedisConfig extends CachingConfigurerSupport
         redisScript.setScriptText(limitScriptText());
         redisScript.setResultType(Long.class);
         return redisScript;
+    }
+
+    @Bean
+    public ObjectMapper objectMapper()
+    {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        return objectMapper;
     }
 
     /**

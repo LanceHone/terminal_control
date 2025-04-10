@@ -51,7 +51,7 @@ public interface IAccessCtrlNetworkTcpService extends IAccessPolicyService {
      * @param modbus 网络层访问控制信息
      * @return 结果
      */
-    int updateStatus(AccessPolicyInduModbus modbus);
+    int updateStatus(AccessPolicyNetworkTcp modbus);
 
     /**
      * 删除网络层访问控制
@@ -89,4 +89,6 @@ public interface IAccessCtrlNetworkTcpService extends IAccessPolicyService {
     boolean isAccessAllowed(String srcIp, int srcPort, String dstIp, int dstPort);
 
     boolean checkAccess(Object msg);
+
+    void updateWhiteList(AccessPolicyNetworkTcp accessCtrlNetworkTcp, String add);
 }

@@ -43,10 +43,51 @@ export function updateTcp(data) {
   });
 }
 
-// 删除网络层访问控制
 export function delTcp(id) {
   return request({
     url: '/access/tcp/' + id,
     method: 'delete'
+  });
+}
+
+export function http(id) {
+  return request({
+    url: '/access/tcp/http/' + id,
+    method: 'post'
+  });
+}
+
+export function telnet(id) {
+  return request({
+    url: '/access/tcp/telnet/' + id,
+    method: 'post'
+  });
+}
+
+export function ftp(id) {
+  return request({
+    url: '/access/tcp/ftp/' + id,
+    method: 'post'
+  });
+}
+
+export function status(id) {
+  return request({
+    url: '/access/tcp/app/status',
+    method: 'get'
+  });
+}
+
+export function setting_flood_status(id) {
+  return request({
+    url: '/access/tcp/flood/status',
+    method: 'get'
+  });
+}
+
+export function set_flood(key, value) {
+  return request({
+    url: `/access/tcp/${key}/${value}`,
+    method: 'post'
   });
 }

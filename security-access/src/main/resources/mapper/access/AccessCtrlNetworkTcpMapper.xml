@@ -35,17 +35,17 @@
     <select id="selectAccessCtrlNetworkTcpList" parameterType="AccessPolicyNetworkTcp"
             resultMap="AccessCtrlNetworkTcpResult">
         <include refid="selectAccessCtrlVo"/>
-        where 1=1
-        <if test="sourceIp != null and sourceIp != ''">
-            AND source_ip = #{sourceIp}
-        </if>
-        <if test="targetIp != null and targetIp != ''">
-            AND target_ip = #{targetIp}
-        </if>
-        <if test="status != null and status != ''">
-            AND status = #{status}
-        </if>
-        order by create_time DESC
+<!--        where 1=1-->
+<!--        <if test="sourceIp != null and sourceIp != ''">-->
+<!--            AND source_ip = #{sourceIp}-->
+<!--        </if>-->
+<!--        <if test="targetIp != null and targetIp != ''">-->
+<!--            AND target_ip = #{targetIp}-->
+<!--        </if>-->
+<!--        <if test="status != null and status != ''">-->
+<!--            AND status = #{status}-->
+<!--        </if>-->
+<!--        order by create_time DESC-->
     </select>
 
     <select id="selectAccessCtrlNetworkTcpById" parameterType="Long" resultMap="AccessCtrlNetworkTcpResult">

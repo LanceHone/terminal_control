@@ -10,12 +10,13 @@ spring:
             master:
 #                url: jdbc:mysql://localhost:3306/security1?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
 #                url: jdbc:mysql://192.168.0.189:3306/security1?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-                url: jdbc:mysql://82.157.210.34:3306/security1?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+#                url: jdbc:mysql://82.157.210.34:3306/security1?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+                url: jdbc:mysql://localhost:33066/security?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
 #                url: jdbc:mysql://localhost:3307/security1?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
 #                username: dap
-                username: security1
+                username: root
 #                password: admin
-                password: ceTri3d8xttjGGcX
+                password: root
             # 从库数据源
             slave:
                 # 从数据源开关/默认关闭

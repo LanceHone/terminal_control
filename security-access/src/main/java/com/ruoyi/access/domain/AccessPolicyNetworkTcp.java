@@ -9,12 +9,12 @@ public class AccessPolicyNetworkTcp extends AccessPolicy {
     private static final long serialVersionUID = 1L;
     private Long id;
 
-    private String sourceIp;
-    private Integer sourcePort;
-    private String targetIp;
-    private Integer targetPort;
+    private String sourceIp = "0.0.0.0/0";
+    private Integer sourcePort = 0;
+    private String targetIp = "0.0.0.0/0";
+    private Integer targetPort = 0;
     @Excel(name = "帐号状态", readConverterExp = "0=正常,1=停用")
-    private String status;
+    private String status = "1";
 
     public Long getId() {
         return id;

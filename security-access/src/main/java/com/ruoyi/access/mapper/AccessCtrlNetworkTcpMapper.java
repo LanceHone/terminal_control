@@ -1,6 +1,5 @@
 package com.ruoyi.access.mapper;
 
-import com.ruoyi.access.domain.AccessPolicyInduModbus;
 import com.ruoyi.access.domain.AccessPolicyNetworkTcp;
 import org.apache.ibatis.annotations.Param;
 
@@ -48,7 +47,7 @@ public interface AccessCtrlNetworkTcpMapper {
      * @param modbus
      * @return
      */
-    public int updateStatus(AccessPolicyInduModbus modbus);
+    public int updateStatus(AccessPolicyNetworkTcp modbus);
 
     /**
      * 删除网络层访问控制

@@ -35,4 +35,6 @@ public interface IAccessCtrlInduModbusService extends IAccessPolicyService {
     public Thread startServer();
 
     public String checkAccessRequest(AccessPolicyInduModbus modbus);
+
+    List<AccessPolicyInduModbus> getActivePolicies();
 }

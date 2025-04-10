@@ -80,7 +80,5 @@ public class ServerController {
         } catch (Exception e) {
             return AjaxResult.error(e.getMessage());
         }
-        // 解压文件当/opt/access/html下
-
     }
 }
