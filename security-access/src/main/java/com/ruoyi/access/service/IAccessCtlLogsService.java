@@ -1,7 +1,8 @@
-package com.ruoyi.service;
+package com.ruoyi.access.service;
+
+import com.ruoyi.access.domain.AccessCtlLogs;
 
 import java.util.List;
-import com.ruoyi.domain.AccessCtlLogs;
 
 /**
  * 控制日志Service接口

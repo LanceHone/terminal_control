@@ -21,7 +21,7 @@ import java.net.InetSocketAddress;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-@Configuration
+// @Configuration
 public class AccessServerConfig {
     @Value("${server.port}")
     private int appPort;

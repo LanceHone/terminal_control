@@ -203,7 +203,7 @@ public class AccessCtrlNetworkTcpController extends BaseController {
         List<AppStatus> appStatuses = new ArrayList<>();
         appStatuses.add(new AppStatus("启用网络层白名单", netStatus));
         appStatuses.add(new AppStatus("抗SYN_FLOOD攻击", synStatus));
-        appStatuses.add(new AppStatus("抗UPD_FLOOD攻击", udpStatus));
+        appStatuses.add(new AppStatus("抗UDP_FLOOD攻击", udpStatus));
         appStatuses.add(new AppStatus("抗ICMP_FLOOD攻击", icmpStatus));
         appStatuses.add(new AppStatus("抗PING_OF_DEATH攻击", pingStatus));
         return AjaxResult.success(appStatuses);
@@ -275,9 +275,9 @@ public class AccessCtrlNetworkTcpController extends BaseController {
     public AjaxResult ping(@PathVariable Boolean enable) {
         String cmd;
         if (!enable) {
-            cmd = "iptables -D INPUT -f -j DROP";
+            cmd = "iptables -D INPUT -p icmp --icmp-type echo-request -m length --length 1000:65535 -j DROP";
         } else {
-            cmd = "iptables -I INPUT 1 -f -j DROP";
+            cmd = "iptables -I INPUT 1 -p icmp --icmp-type echo-request -m length --length 1000:65535 -j DROP";
         }
         logger.info(cmd);
         RuntimeUtil.execForStr(cmd);
@@ -308,9 +308,9 @@ public class AccessCtrlNetworkTcpController extends BaseController {
 
         String cmd;
         if (!enable) {
-            cmd = "iptables -D INPUT -p udp -m limit --limit 10/s --limit-burst 20 -j ACCEPT";
+            cmd = "iptables -D UDP_FLOOD_CHECK -m recent --name udprate --rcheck --seconds 1 --hitcount 101 -j DROP";
         } else {
-            cmd = "iptables -I INPUT 1 -p udp -m limit --limit 10/s --limit-burst 20 -j ACCEPT";
+            cmd = "iptables -A UDP_FLOOD_CHECK -m recent --name udprate --rcheck --seconds 1 --hitcount 101 -j DROP";
         }
         logger.info(cmd);
         RuntimeUtil.execForStr(cmd);
@@ -324,14 +324,18 @@ public class AccessCtrlNetworkTcpController extends BaseController {
     public AjaxResult syn(@PathVariable Boolean enable) {
 
         String cmd;
+        String cmd1;
         if (!enable) {
             cmd = "sysctl -w net.ipv4.tcp_syncookies=0";
+            cmd1 =  "iptables -D SYN_FLOOD_CHECK -m recent --name synrate --rcheck --seconds 1 --hitcount 6 -j DROP";
         } else {
             cmd = "sysctl -w net.ipv4.tcp_syncookies=1";
+            cmd1 =  "iptables -A SYN_FLOOD_CHECK -m recent --name synrate --rcheck --seconds 1 --hitcount 6 -j DROP";
         }
         logger.info(cmd);
         RuntimeUtil.execForStr(cmd);
-        RuntimeUtil.execForStr("sysctl -p");
+        RuntimeUtil.execForStr("sysctl -p");//重启生效
+        RuntimeUtil.execForStr(cmd1);
         synStatus = enable;
         return AjaxResult.success();
     }

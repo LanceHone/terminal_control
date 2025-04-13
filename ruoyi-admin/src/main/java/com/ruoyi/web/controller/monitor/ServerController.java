@@ -33,17 +33,17 @@ public class ServerController {
         return AjaxResult.success(server);
     }
 
-    @PreAuthorize("@ss.hasPermi('monitor:server:update')")
+    @PreAuthorize("@ss.hasPermi('monitor:server:list')")
     @PostMapping("/time/sync")
     @Log(title = "系统时间同步设置", businessType = BusinessType.UPDATE)
-    public AjaxResult syncSwitch() throws Exception {
+    public AjaxResult syncSwitch(@RequestParam String time) throws Exception {
         RuntimeUtil.execForStr("sudo systemctl enable --now chronyd");
+        RuntimeUtil.execForStr("sudo date -s " + time);
         RuntimeUtil.execForStr("timedatectl set-ntp true");
         return AjaxResult.success("设置成功");
-
     }
 
-    @PreAuthorize("@ss.hasPermi('monitor:server:update')")
+    @PreAuthorize("@ss.hasPermi('monitor:server:list')")
     @PostMapping("/time/setTz")
     @Log(title = "系统时区设置", businessType = BusinessType.UPDATE)
     public AjaxResult setTz() throws Exception {
@@ -53,7 +53,7 @@ public class ServerController {
     @Autowired
     private ServerConfig serverConfig;
     @PostMapping("/upload")
-    @PreAuthorize("@ss.hasPermi('monitor:server:update')")
+    @PreAuthorize("@ss.hasPermi('monitor:server:list')")
     @Log(title = "上传更新包", businessType = BusinessType.UPDATE)
     public AjaxResult uploadFile(MultipartFile file,String md5) throws Exception {
         try (InputStream in = file.getInputStream()){
@@ -75,7 +75,7 @@ public class ServerController {
             ajax.put("originalFilename", file.getOriginalFilename());
 
             String path = filePath + fileName.replace("", "/profile/upload/");
-            RuntimeUtil.execForStr("tar -zxvf "+ path + " -C " + "/var/access/html/");
+            RuntimeUtil.execForStr("tar -zxvf "+ path + " -C " + "/home/dap/rtfk");
             return ajax;
         } catch (Exception e) {
             return AjaxResult.error(e.getMessage());

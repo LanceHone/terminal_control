@@ -1,11 +1,12 @@
-package com.ruoyi.service.impl;
+package com.ruoyi.access.service.impl;
 
-import java.util.List;
+import com.ruoyi.access.domain.AccessCtlLogs;
+import com.ruoyi.access.mapper.AccessCtlLogsMapper;
+import com.ruoyi.access.service.IAccessCtlLogsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.mapper.AccessCtlLogsMapper;
-import com.ruoyi.domain.AccessCtlLogs;
-import com.ruoyi.service.IAccessCtlLogsService;
+
+import java.util.List;
 
 /**
  * 控制日志Service业务层处理
@@ -14,7 +15,7 @@ import com.ruoyi.service.IAccessCtlLogsService;
  * @date 2025-04-13
  */
 @Service
-public class AccessCtlLogsServiceImpl implements IAccessCtlLogsService 
+public class AccessCtlLogsServiceImpl implements IAccessCtlLogsService
 {
     @Autowired
     private AccessCtlLogsMapper accessCtlLogsMapper;
@@ -90,4 +91,5 @@ public class AccessCtlLogsServiceImpl implements IAccessCtlLogsService
     {
         return accessCtlLogsMapper.deleteAccessCtlLogsById(id);
     }
+
 }

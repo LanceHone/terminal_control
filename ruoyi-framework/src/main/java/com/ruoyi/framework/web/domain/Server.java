@@ -102,6 +102,22 @@ public class Server
         this.sysFiles = sysFiles;
     }
 
+    public List<SysNetInterface> getNetworkIFs() {
+        return networkIFs;
+    }
+
+    public void setNetworkIFs(List<SysNetInterface> networkIFs) {
+        this.networkIFs = networkIFs;
+    }
+
+    public Map<String, String> getClock() {
+        return clock;
+    }
+
+    public void setClock(Map<String, String> clock) {
+        this.clock = clock;
+    }
+
     Map<String, String> clock = new HashMap<>();
     private List<SysNetInterface> networkIFs = new ArrayList<>();
     public void copyTo() throws Exception

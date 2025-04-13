@@ -1,4 +1,4 @@
-package com.ruoyi.domain;
+package com.ruoyi.access.domain;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -19,28 +19,39 @@ public class AccessCtlLogs extends BaseEntity
     private Long id;
 
     /** $column.columnComment */
-    @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
+    @Excel(name = "类型")
     private String type;
 
     /** $column.columnComment */
-    @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
+    @Excel(name = "源IP")
     private String src;
 
     /** $column.columnComment */
-    @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
+    @Excel(name = "目标IP")
     private String dst;
 
     /** $column.columnComment */
-    @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
+    @Excel(name = "源端口")
     private String spt;
 
     /** $column.columnComment */
-    @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
+    @Excel(name = "目标端口")
     private String dpt;
 
     /** $column.columnComment */
-    @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
+    @Excel(name = "时间")
     private String ts;
+
+    public AccessCtlLogs() {
+    }
+
+    public AccessCtlLogs(String timestamp, String status, String srcIP, String dstIP, String srcPort, String dstPort) {
+        this.ts = timestamp;
+        this.src = srcIP;
+        this.dst = dstIP;
+        this.spt = srcPort;
+        this.dpt =dstPort;
+    }
 
     public void setId(Long id) 
     {

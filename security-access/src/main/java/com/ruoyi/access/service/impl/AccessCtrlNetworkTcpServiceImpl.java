@@ -2,14 +2,13 @@ package com.ruoyi.access.service.impl;
 
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.RuntimeUtil;
-import com.ruoyi.access.domain.AccessControlLogItem;
 import com.ruoyi.access.domain.AccessPolicyNetworkTcp;
 import com.ruoyi.access.mapper.AccessCtrlNetworkTcpMapper;
 import com.ruoyi.access.service.IAccessCtrlNetworkTcpService;
 import com.ruoyi.common.annotation.DataScope;
-import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.common.core.domain.entity.SysDictData;
 import com.ruoyi.common.utils.SecurityUtils;
-import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.system.service.ISysDictTypeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -198,46 +197,6 @@ public class AccessCtrlNetworkTcpServiceImpl implements IAccessCtrlNetworkTcpSer
         cmd.append(" -j RETURN");
         logger.info(cmd.toString());
         RuntimeUtil.execForStr(cmd.toString());
-    }
-
-
-    @Scheduled(cron = "0 0/5 * * * ? ")
-    public List<AccessControlLogItem> parseLogFile() {
-        String filePath = "/var/access/acc_ctl.log";
-        Path path = Paths.get(filePath);
-        List<AccessControlLogItem> entries = new ArrayList<>();
-        Pattern pattern = Pattern.compile(
-                "^(\\S+)\\s+.*?(\\[ACCEPT\\]|\\[DROP\\]).*?SRC=(\\S+) DST=(\\S+) .*?SPT=(\\d+) DPT=(\\d+)"
-        );
-
-        try (BufferedReader reader = Files.newBufferedReader(path)) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                Matcher matcher = pattern.matcher(line);
-                if (matcher.find()) {
-                    String timestamp = matcher.group(1);
-                    String status = matcher.group(2);
-                    String srcIP = matcher.group(3);
-                    String dstIP = matcher.group(4);
-                    int srcPort = Integer.parseInt(matcher.group(5));
-                    int dstPort = Integer.parseInt(matcher.group(6));
-
-                    entries.add(new AccessControlLogItem(timestamp, status, srcIP, dstIP, srcPort, dstPort));
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // 清空文件内容
-        try (BufferedWriter writer = Files.newBufferedWriter(path, StandardOpenOption.TRUNCATE_EXISTING)) {
-            // 写入空字符串即可清空
-            writer.write("");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return entries;
     }
 
 }

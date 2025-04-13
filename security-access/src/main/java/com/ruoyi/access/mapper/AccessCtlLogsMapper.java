@@ -1,7 +1,8 @@
-package com.ruoyi.mapper;
+package com.ruoyi.access.mapper;
+
+import com.ruoyi.access.domain.AccessCtlLogs;
 
 import java.util.List;
-import com.ruoyi.domain.AccessCtlLogs;
 
 /**
  * 控制日志Mapper接口

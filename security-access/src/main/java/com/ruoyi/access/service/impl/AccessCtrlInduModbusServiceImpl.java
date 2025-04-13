@@ -174,7 +174,7 @@ public class AccessCtrlInduModbusServiceImpl implements IAccessCtrlInduModbusSer
                 shutdownGracefully();
             }
         }, "Netty-Server-Thread");// 指定线程名称
-        policythread.start();
+        // policythread.start();
         return policythread;
     }
 
