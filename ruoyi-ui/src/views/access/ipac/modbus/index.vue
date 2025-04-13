@@ -79,7 +79,7 @@
       <el-table-column label="状态" prop="status"  align="center">
         <template slot-scope="scope">
           <el-switch
-            :value="scope.row.status === '0'"
+            :value="scope.row.status === '1'"
             @change="(value) => handleStatusChange(scope.row, value)"
             active-color="#13ce66"
             inactive-color="#ff4949"
@@ -348,7 +348,7 @@ export default {
     },
     /** 修改状态 */
     handleStatusChange(row, value) {
-      const status = value ? '0' : '1';
+      const status = !value ? '0' : '1';
       // 调用接口更新状态
       updateModbusStatus({ id: row.id, status }).then(() => {
         this.$message.success("状态更新成功");

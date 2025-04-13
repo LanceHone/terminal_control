@@ -1,25 +1,41 @@
 <template>
   <div class="app-container">
+
+    <el-dialog title="系统更新" :visible.sync="upload_popup">
+
+      <el-upload ref="upload" :limit="1" :action="upload.url" :headers="upload.headers" :file-list="upload.fileList" :data="{'md5':md5}" accept=".zip"
+        :on-progress="handleFileUploadProgress" :on-success="handleFileSuccess" :auto-upload="false" :on-error="upload.isUploading=false">
+        <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+      </el-upload>
+      <el-input v-model="md5" autocomplete="off" style="margin-top: 30px;"></el-input>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancel">取 消</el-button>
+        <el-button style="margin-left: 10px;" size="small" type="success" :loading="upload.isUploading"
+          @click="submitUpload">上传</el-button>
+      </div>
+
+    </el-dialog>
+
     <el-row>
+      <el-col :sm="24" class="card-box" style="padding-left: 20px">
+        <div style="display:flex;justify-content: space-between;align-items: center;width:100%">
+          <h2>工控网络隔离装置测试环境 V_1.0.0</h2>
+          <p>
+            <el-button size="mini" icon="el-icon-upload" plain @click="upload_popup = true">产品升级</el-button>
+          </p>
+        </div>
+      </el-col>
 
       <el-col :span="24" class="card-box">
         <el-card>
           <div slot="header">
             <span><i class="el-icon-time"></i> 系统时间</span>
-            <el-button
-                          style="float: right; padding: 3px 0"
-                          @click="onSyncChange"
-                          type="text"
-                          >开启同步</el-button
-                        >
-            <el-button
-              style="float: right; padding: 3px 50px;margin: 0 30px"
-              @click="onSetTz"
-              type="text"
-              >使用中国时区</el-button
-            >
+            <el-button style="float: right; padding: 3px 0" @click="onSyncChange" type="text">开启同步</el-button>
+            <el-button style="float: right; padding: 3px 50px;margin: 0 30px" @click="onSetTz"
+              type="text">使用中国时区</el-button>
 
           </div>
+
           <div class="el-table el-table--enable-row-hover el-table--medium">
             <table cellspacing="0" style="width: 100%">
               <thead>
@@ -37,7 +53,7 @@
                     <div class="cell">时区</div>
                   </th>
                   <th class="el-table__cell el-table__cell is-leaf">
-                    <div class="cell">自动同步</div>
+                    <div class="cell">NTP可用</div>
                   </th>
                 </tr>
               </thead>
@@ -56,7 +72,7 @@
                     <div class="cell">{{ server.clock["Time zone"] }}</div>
                   </td>
                   <td class="el-table__cell is-leaf">
-                    <div class="cell">{{ server.clock["NTP service"] }}</div>
+                    <div class="cell">{{ server.clock["NTP enabled"] || server.clock['NTP service'] }}</div>
                   </td>
                 </tr>
               </tbody>
@@ -200,20 +216,12 @@
                     <div class="cell">使用率</div>
                   </td>
                   <td class="el-table__cell is-leaf">
-                    <div
-                      class="cell"
-                      v-if="server.mem"
-                      :class="{ 'text-danger': server.mem.usage > 80 }"
-                    >
+                    <div class="cell" v-if="server.mem" :class="{ 'text-danger': server.mem.usage > 80 }">
                       {{ server.mem.usage }}%
                     </div>
                   </td>
                   <td class="el-table__cell is-leaf">
-                    <div
-                      class="cell"
-                      v-if="server.jvm"
-                      :class="{ 'text-danger': server.jvm.usage > 80 }"
-                    >
+                    <div class="cell" v-if="server.jvm" :class="{ 'text-danger': server.jvm.usage > 80 }">
                       {{ server.jvm.usage }}%
                     </div>
                   </td>
@@ -277,10 +285,7 @@
                     <div class="cell">{{ sysFile.used }}</div>
                   </td>
                   <td class="el-table__cell is-leaf">
-                    <div
-                      class="cell"
-                      :class="{ 'text-danger': sysFile.usage > 80 }"
-                    >
+                    <div class="cell" :class="{ 'text-danger': sysFile.usage > 80 }">
                       {{ sysFile.usage }}%
                     </div>
                   </td>
@@ -320,12 +325,7 @@
               <tbody v-if="server.networkIFs">
                 <tr v-for="(net, index) in server.networkIFs" :key="index">
                   <td class="el-table__cell is-leaf">
-                    <el-tooltip
-                      class="item"
-                      effect="dark"
-                      :content="net.displayName"
-                      placement="top"
-                    >
+                    <el-tooltip class="item" effect="dark" :content="net.displayName" placement="top">
                       <div class="cell">{{ net.name }}</div>
                     </el-tooltip>
                   </td>
@@ -483,6 +483,7 @@
 
 <script>
 import { getServer, timeSync, setTimezone } from "@/api/monitor/server";
+import { getToken } from "@/utils/auth";
 
 export default {
   name: "Server",
@@ -492,6 +493,19 @@ export default {
       server: [],
       intervalID: null,
       loading: false,
+
+      upload_popup: false,
+      md5: '',
+      upload: {
+        // 是否禁用上传
+        isUploading: false,
+        // 设置上传的请求头部
+        headers: { Authorization: "Bearer " + getToken() },
+        // 上传的地址
+        url: process.env.VUE_APP_BASE_API + "/monitor/server/upload",
+        // 上传的文件列表
+        fileList: []
+      },
     };
   },
   created() {
@@ -515,23 +529,49 @@ export default {
       this.$modal.loading("正在加载服务监控数据，请稍候！");
     },
     onSyncChange() {
-      this.$modal.confirm("设置打开NTP同步？", () => {
-        this.$modal.loading("正在打开同步，请稍候！");
-        timeSync().then((res) => {
+      this.$modal.confirm("设置打开NTP同步？").then(() => {
+        this.$modal.loading("正在设置NTP同步，请稍候");
+        timeSync().then(() => {
           this.$modal.closeLoading();
           this.$modal.msgSuccess("设置成功");
         });
       });
     },
     onSetTz() {
-      this.$modal.confirm("设置时区为中国？", () => {
-        this.$modal.loading("正在设置时区，请稍候！");
-        setTimeZone().then((res) => {
+      this.$modal.confirm("设置时区为中国？").then(() => {
+        this.$modal.loading("正在设置时区，请稍候");
+        setTimezone().then(() => {
           this.$modal.closeLoading();
           this.$modal.msgSuccess("设置成功");
         });
       });
     },
+    // 文件提交处理
+    submitUpload() {
+      if (this.md5.length == 0) {
+        this.$modal.alert("校验码不能为空");
+      } else
+        this.$refs.upload.submit();
+    },
+    // 文件上传中处理
+    handleFileUploadProgress(event, file, fileList) {
+      this.upload.isUploading = true;
+    },
+    // 文件上传成功处理
+    handleFileSuccess(response, file, fileList) {
+      if (response.code != 200) {
+        this.$modal.msgError(response.msg);
+      } else {
+        this.form.filePath = response.url;
+        this.msgSuccess(response.msg);
+      }
+      this.upload.isUploading = false;
+    },
+
+    cancel() {
+      this.upload_popup = false
+      this.upload.isUploading = false
+    }
   },
 };
 </script>

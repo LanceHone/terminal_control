@@ -19,7 +19,7 @@
     <el-row>
       <el-col :sm="24" class="card-box" style="padding-left: 20px">
         <div style="display:flex;justify-content: space-between;align-items: center;width:100%">
-          <h2>安全管理系统测试环境</h2>
+          <h2>工控网络隔离装置测试环境</h2>
           <p>
             <el-button size="mini" icon="el-icon-upload" plain @click="upload_popup = true">产品升级</el-button>
           </p>

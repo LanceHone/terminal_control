@@ -9,17 +9,17 @@ export function getServer() {
 }
 
 // 获取服务信息
-export function timeSync(open) {
+export function timeSync() {
   return request({
-    url: '/monitor/serve/time/sync/',
+    url: '/monitor/server/time/sync?time=' + new Date().getTime(),
     method: 'post'
   })
 }
 
 // 获取服务信息
-export function setTimezone(open) {
+export function setTimezone() {
   return request({
-    url: '/monitor/serve/time/setTz/',
+    url: '/monitor/server/time/setTz/',
     method: 'post'
   })
 }

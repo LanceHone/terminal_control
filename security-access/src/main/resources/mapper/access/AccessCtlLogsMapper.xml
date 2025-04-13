@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mapper.AccessCtlLogsMapper">
+    
+    <resultMap type="AccessCtlLogs" id="AccessCtlLogsResult">
+        <result property="id"    column="id"    />
+        <result property="type"    column="type"    />
+        <result property="src"    column="src"    />
+        <result property="dst"    column="dst"    />
+        <result property="spt"    column="spt"    />
+        <result property="dpt"    column="dpt"    />
+        <result property="ts"    column="ts"    />
+    </resultMap>
+
+    <sql id="selectAccessCtlLogsVo">
+        select id, type, src, dst, spt, dpt, ts from access_ctl_logs
+    </sql>
+
+    <select id="selectAccessCtlLogsList" parameterType="AccessCtlLogs" resultMap="AccessCtlLogsResult">
+        <include refid="selectAccessCtlLogsVo"/>
+        <where>  
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="src != null  and src != ''"> and src = #{src}</if>
+            <if test="dst != null  and dst != ''"> and dst = #{dst}</if>
+            <if test="spt != null  and spt != ''"> and spt = #{spt}</if>
+            <if test="dpt != null  and dpt != ''"> and dpt = #{dpt}</if>
+            <if test="ts != null  and ts != ''"> and ts = #{ts}</if>
+        </where>
+    </select>
+    
+    <select id="selectAccessCtlLogsById" parameterType="Long" resultMap="AccessCtlLogsResult">
+        <include refid="selectAccessCtlLogsVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertAccessCtlLogs" parameterType="AccessCtlLogs">
+        insert into access_ctl_logs
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="type != null">type,</if>
+            <if test="src != null">src,</if>
+            <if test="dst != null">dst,</if>
+            <if test="spt != null">spt,</if>
+            <if test="dpt != null">dpt,</if>
+            <if test="ts != null">ts,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="type != null">#{type},</if>
+            <if test="src != null">#{src},</if>
+            <if test="dst != null">#{dst},</if>
+            <if test="spt != null">#{spt},</if>
+            <if test="dpt != null">#{dpt},</if>
+            <if test="ts != null">#{ts},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAccessCtlLogs" parameterType="AccessCtlLogs">
+        update access_ctl_logs
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="type != null">type = #{type},</if>
+            <if test="src != null">src = #{src},</if>
+            <if test="dst != null">dst = #{dst},</if>
+            <if test="spt != null">spt = #{spt},</if>
+            <if test="dpt != null">dpt = #{dpt},</if>
+            <if test="ts != null">ts = #{ts},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAccessCtlLogsById" parameterType="Long">
+        delete from access_ctl_logs where id = #{id}
+    </delete>
+
+    <delete id="deleteAccessCtlLogsByIds" parameterType="String">
+        delete from access_ctl_logs where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

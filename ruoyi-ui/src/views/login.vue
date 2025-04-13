@@ -2,7 +2,7 @@
   <div class="login">
     <el-form v-if="pwdReset" ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" :disabled="globalLocking" >
 <!--    <el-form v-if="pwdReset" ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" >-->
-      <h3 class="title">安全管理系统</h3>
+      <h3 class="title">工控网络隔离装置</h3>
       <el-form-item prop="username">
         <el-input
           v-model="loginForm.username"
@@ -88,7 +88,7 @@ export default {
       codeUrl: '',
       loginForm: {
         username: 'admin',
-        password: 'admin123',
+        password: '',
         rememberMe: false,
         code: '',
         uuid: ''
