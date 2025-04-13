@@ -59,4 +59,8 @@ public interface AccessCtlLogsMapper
      * @return 结果
      */
     public int deleteAccessCtlLogsByIds(Long[] ids);
+
+    public void clear();
+
+    public int countSize();
 }

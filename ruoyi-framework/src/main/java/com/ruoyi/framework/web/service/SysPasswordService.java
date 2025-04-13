@@ -27,7 +27,7 @@ public class SysPasswordService
     @Value(value = "3")
     private int maxRetryCount;
 
-    @Value(value = "15")
+    @Value(value = "1")
     private int lockTime;
 
     /**

@@ -17,20 +17,18 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.access.domain.AccessCtlLogs;
+import com.ruoyi.access.mapper.AccessCtlLogsMapper;
+import com.ruoyi.access.mapper.AccessMdbLogsMapper;
 import com.ruoyi.access.service.IAccessCtlLogsService;
 import com.ruoyi.common.core.domain.entity.SysDictData;
+import com.ruoyi.system.mapper.SysLogininforMapper;
+import com.ruoyi.system.mapper.SysOperLogMapper;
+import com.ruoyi.system.service.ISysDictDataService;
 import com.ruoyi.system.service.ISysDictTypeService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -120,8 +118,7 @@ public class AccessCtlLogsController extends BaseController
     }
 
     @Scheduled(cron = "*/30 * * * * *")
-    public List<AccessCtlLogs> parseLogFile() {
-        System.out.println("开始收集日志文件");
+    public void parseLogFile() {
         String filePath = "/var/access/acc_ctl.log";
         Path path = Paths.get(filePath);
         List<AccessCtlLogs> entries = new ArrayList<>();
@@ -140,21 +137,32 @@ public class AccessCtlLogsController extends BaseController
 
         // 清空文件内容
         try (BufferedWriter writer = Files.newBufferedWriter(path, StandardOpenOption.TRUNCATE_EXISTING)) {
-            // 写入空字符串即可清空
             writer.write("");
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }
-
-        return entries;
+        entries.forEach(entry -> accessCtlLogsService.insertAccessCtlLogs(entry));
     }
 
     @Autowired
-    private ISysDictTypeService dictTypeService;
-    void test(String dictType) {
-        List<SysDictData> data = dictTypeService.selectDictDataByType(dictType);
+    AccessCtlLogsMapper accessMdbLogsMapper;
+    @PreAuthorize("@ss.hasPermi('access:logs:remove')")
+    @Log(title = "清空访问控制日志", businessType = BusinessType.DELETE)
+    @PostMapping("/clear")
+    public AjaxResult clear(@PathVariable Long[] ids)
+    {
+        accessMdbLogsMapper.clear();
+        return AjaxResult.success();
     }
 
+    @Autowired ISysDictDataService dictDataService;
+
+    @PreAuthorize("@ss.hasPermi('access:logs:update')")
+    @Log(title = "修改日志阈值", businessType = BusinessType.DELETE)
+    @PostMapping("/threshold")
+    public AjaxResult updateThreshold(@RequestBody SysDictData sysDictData) {
+        return AjaxResult.success(dictDataService.updateDictData(sysDictData));
+    }
 
     private AccessCtlLogs parseLogLine(String logLine) {
         if (logLine == null || logLine.isEmpty()) return null;

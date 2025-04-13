@@ -39,4 +39,6 @@ public interface SysLogininforMapper
      * @return 结果
      */
     public int cleanLogininfor();
+
+    public int countSize();
 }

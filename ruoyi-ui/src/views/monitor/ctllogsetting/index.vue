@@ -6,23 +6,15 @@
       <el-input v-model="value" autocomplete="off" style="margin-top: 30px;"></el-input>
       <div slot="footer" class="dialog-footer">
         <el-button @click="show = !show">取 消</el-button>
-        <el-button @click="confirm">上传</el-button>
+        <el-button @click="confirm">确定</el-button>
       </div>
     </el-dialog>
 
-    <el-table :data="tableData" style="width: 100%">
+    <el-table :data="dict.type.sys_settings" style="width: 100%">
       <el-table-column prop="label" label="设置项目"></el-table-column>
-      <el-table-column label="阈值(单位：M)" style="width: 100%;">
+      <el-table-column label="阈值" style="width: 100%;">
         <template slot-scope="scope">
           <div @click="click(scope.row)" autocomplete="off">{{ scope.row.value }}</div>
-        </template>
-      </el-table-column>
-      <el-table-column prop="label" label="当前大小"></el-table-column>
-      <el-table-column prop="label" label="操作">
-        <template slot-scope="scope">
-          <el-button size="mini" type="text" @click="handleDelete(scope.row)">
-            导出并清空
-          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -32,6 +24,7 @@
 
 <script>
 import { list, delLogininfor, cleanLogininfor, unlockLogininfor } from "@/api/monitor/logininfor";
+import {threshold} from "@/api/access/logs";
 
 export default {
   name: "Logininfor",
@@ -76,15 +69,13 @@ export default {
     this.tableData = this.dict.type.sys_settings
   },
   methods: {
-    confirm() {
+    confirm(row) {
       this.$modal.confirm('是否确认设置项"' + this.currentRow.label + '"的数据项？').then(() =>{
-        return this.$http.post('/monitor/ctllogsetting/update', {
-          label: this.currentRow.label,
-          value: this.value
-        });
+        return threshold(this.currentRow);
       }).then((res) => {
         this.tableData = res.data
-        this.$modal.msgSuccess("上传成功");
+        this.$modal.msgSuccess("设置成功");
+        this.show = false;
       }).catch(() => { });
     },
     click(row) {

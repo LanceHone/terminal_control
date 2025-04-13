@@ -1,44 +1,44 @@
 import request from '@/utils/request'
 
-// 查询控制日志列表
+// 查询modbus控制日志列表
 export function listLogs(query) {
   return request({
-    url: '/access/logs/list',
+    url: '/access/mdb/logs/list',
     method: 'get',
     params: query
   })
 }
 
-// 查询控制日志详细
+// 查询modbus控制日志详细
 export function getLogs(id) {
   return request({
-    url: '/access/logs/' + id,
+    url: '/access/mdb/logs/' + id,
     method: 'get'
   })
 }
 
-// 新增控制日志
+// 新增modbus控制日志
 export function addLogs(data) {
   return request({
-    url: '/access/logs',
+    url: '/access/mdb/logs',
     method: 'post',
     data: data
   })
 }
 
-// 修改控制日志
+// 修改modbus控制日志
 export function updateLogs(data) {
   return request({
-    url: '/access/logs',
+    url: '/access/mdb/logs',
     method: 'put',
     data: data
   })
 }
 
-// 删除控制日志
+// 删除modbus控制日志
 export function delLogs(id) {
   return request({
-    url: '/access/logs/' + id,
+    url: '/access/mdb/logs/' + id,
     method: 'delete'
   })
 }
@@ -46,17 +46,7 @@ export function delLogs(id) {
 // 删除modbus控制日志
 export function clear() {
   return request({
-    url: '/access/logs/clear',
+    url: '/access/mdb/logs/clear',
     method: 'post'
-  })
-}
-
-
-// 删除modbus控制日志
-export function threshold(data) {
-  return request({
-    url: '/access/logs/threshold',
-    method: 'post',
-    data: data
   })
 }

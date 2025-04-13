@@ -2,6 +2,7 @@ import { login, logout, getInfo } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { isHttp, isEmpty } from "@/utils/validate"
 import defAva from '@/assets/images/profile.jpg'
+import { Notification } from 'element-ui'
 
 const user = {
   state: {
@@ -76,6 +77,12 @@ const user = {
           commit('SET_ID', user.userId)
           commit('SET_NAME', user.userName)
           commit('SET_AVATAR', avatar)
+          if (res.logSizeMsg) {
+            Notification.warning({
+              title: '警告',
+              message: res.logSizeMsg,
+            });
+          }
           resolve(res)
         }).catch(error => {
           reject(error)

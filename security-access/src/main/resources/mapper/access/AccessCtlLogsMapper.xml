@@ -80,4 +80,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+    <update id="cleanLogininfor">
+        truncate table access_ctl_logs
+    </update>
+
+    <select id="countSize" resultType="java.lang.Integer">
+        select count(1) from access_ctl_logs
+    </select>
+
 </mapper>

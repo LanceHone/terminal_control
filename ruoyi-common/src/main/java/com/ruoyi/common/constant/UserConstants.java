@@ -90,7 +90,7 @@ public class UserConstants
     public static final String LOCK_TIME = "LOCK_TIME";
     public static final String ATTEMPTS = "ATTEMPTS";
     public static final Long MAX_ATTEMPTS = 3L;
-    public static final Long LOCK_TIME_MINUTES = 1L;
+    public static final Long LOCK_TIME_MINUTES = 5L;
 //    public static final Long LOCK_TIME_MINUTES = 15L;
     public static final Long RESET_TIME_MINUTES = 6000000L;
     @Deprecated//密码失效周期 @Fixme 读取配置

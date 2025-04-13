@@ -87,6 +87,7 @@ public class SysLoginController
         ajax.put("user", user);
         ajax.put("roles", roles);
         ajax.put("permissions", permissions);
+        ajax.put("logSizeMsg", "某某日志已经达到阈值，请处理");
         return ajax;
     }
 
