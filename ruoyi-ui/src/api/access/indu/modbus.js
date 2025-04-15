@@ -61,3 +61,20 @@ export function checkAccess(data) {
     data: data
   })
 }
+
+// 删除modbus控制日志
+export function clear() {
+  return request({
+    url: '/access/logs/mdb/clear',
+    method: 'post'
+  })
+}
+
+// 删除modbus控制日志
+export function threshold(data) {
+  return request({
+    url: '/access/logs/threshold',
+    method: 'post',
+    data: data
+  })
+}

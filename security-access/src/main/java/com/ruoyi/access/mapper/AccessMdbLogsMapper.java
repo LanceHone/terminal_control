@@ -2,13 +2,14 @@ package com.ruoyi.access.mapper;
 
 import com.ruoyi.access.domain.AccessMdbLogs;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
  * modbus控制日志Mapper接口
  * 
  * @author ruoyi
- * @date 2025-04-13
+ * @date 2025-04-15
  */
 public interface AccessMdbLogsMapper 
 {
@@ -62,5 +63,7 @@ public interface AccessMdbLogsMapper
 
     public void clear();
 
-    public int countSize();
+    public Integer countSize();
+
+    void deleteBefore(LocalDateTime localDateTime);
 }

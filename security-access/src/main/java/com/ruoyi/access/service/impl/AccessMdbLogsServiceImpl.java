@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * modbus控制日志Service业务层处理
  * 
  * @author ruoyi
- * @date 2025-04-13
+ * @date 2025-04-15
  */
 @Service
 public class AccessMdbLogsServiceImpl implements IAccessMdbLogsService

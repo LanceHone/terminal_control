@@ -1,71 +1,89 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.access.mapper.AccessCtlLogsMapper">
-    
+
     <resultMap type="AccessCtlLogs" id="AccessCtlLogsResult">
         <result property="id"    column="id"    />
-        <result property="type"    column="type"    />
         <result property="src"    column="src"    />
         <result property="dst"    column="dst"    />
         <result property="spt"    column="spt"    />
         <result property="dpt"    column="dpt"    />
         <result property="ts"    column="ts"    />
+        <result property="protocol"    column="protocol"    />
+        <result property="action"    column="action"    />
+        <result property="module"    column="module"    />
+        <result property="host"    column="host"    />
+        <result property="mac"    column="mac"    />
     </resultMap>
 
     <sql id="selectAccessCtlLogsVo">
-        select id, type, src, dst, spt, dpt, ts from access_ctl_logs
+        select id, src, dst, spt, dpt, ts, protocol, action, module, host, mac from access_ctl_logs
     </sql>
 
     <select id="selectAccessCtlLogsList" parameterType="AccessCtlLogs" resultMap="AccessCtlLogsResult">
         <include refid="selectAccessCtlLogsVo"/>
-        <where>  
-            <if test="type != null  and type != ''"> and type = #{type}</if>
+        <where>
             <if test="src != null  and src != ''"> and src = #{src}</if>
             <if test="dst != null  and dst != ''"> and dst = #{dst}</if>
             <if test="spt != null  and spt != ''"> and spt = #{spt}</if>
             <if test="dpt != null  and dpt != ''"> and dpt = #{dpt}</if>
-            <if test="ts != null  and ts != ''"> and ts = #{ts}</if>
+            <if test="ts != null "> and ts = #{ts}</if>
+            <if test="protocol != null  and protocol != ''"> and protocol = #{protocol}</if>
+            <if test="action != null  and action != ''"> and action = #{action}</if>
+            <if test="module != null  and module != ''"> and module = #{module}</if>
+            <if test="host != null  and host != ''"> and host = #{host}</if>
+            <if test="mac != null  and mac != ''"> and mac = #{mac}</if>
         </where>
     </select>
-    
+
     <select id="selectAccessCtlLogsById" parameterType="Long" resultMap="AccessCtlLogsResult">
         <include refid="selectAccessCtlLogsVo"/>
         where id = #{id}
     </select>
 
-    <insert id="insertAccessCtlLogs" parameterType="AccessCtlLogs">
+    <insert id="insertAccessCtlLogs" parameterType="AccessCtlLogs" useGeneratedKeys="true" keyProperty="id">
         insert into access_ctl_logs
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">id,</if>
-            <if test="type != null">type,</if>
             <if test="src != null">src,</if>
             <if test="dst != null">dst,</if>
             <if test="spt != null">spt,</if>
             <if test="dpt != null">dpt,</if>
             <if test="ts != null">ts,</if>
-         </trim>
+            <if test="protocol != null">protocol,</if>
+            <if test="action != null">action,</if>
+            <if test="module != null">module,</if>
+            <if test="host != null">host,</if>
+            <if test="mac != null">mac,</if>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null">#{id},</if>
-            <if test="type != null">#{type},</if>
             <if test="src != null">#{src},</if>
             <if test="dst != null">#{dst},</if>
             <if test="spt != null">#{spt},</if>
             <if test="dpt != null">#{dpt},</if>
             <if test="ts != null">#{ts},</if>
-         </trim>
+            <if test="protocol != null">#{protocol},</if>
+            <if test="action != null">#{action},</if>
+            <if test="module != null">#{module},</if>
+            <if test="host != null">#{host},</if>
+            <if test="mac != null">#{mac},</if>
+        </trim>
     </insert>
 
     <update id="updateAccessCtlLogs" parameterType="AccessCtlLogs">
         update access_ctl_logs
         <trim prefix="SET" suffixOverrides=",">
-            <if test="type != null">type = #{type},</if>
             <if test="src != null">src = #{src},</if>
             <if test="dst != null">dst = #{dst},</if>
             <if test="spt != null">spt = #{spt},</if>
             <if test="dpt != null">dpt = #{dpt},</if>
             <if test="ts != null">ts = #{ts},</if>
+            <if test="protocol != null">protocol = #{protocol},</if>
+            <if test="action != null">action = #{action},</if>
+            <if test="module != null">module = #{module},</if>
+            <if test="host != null">host = #{host},</if>
+            <if test="mac != null">mac = #{mac},</if>
         </trim>
         where id = #{id}
     </update>
@@ -75,13 +93,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteAccessCtlLogsByIds" parameterType="String">
-        delete from access_ctl_logs where id in 
+        delete from access_ctl_logs where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>
 
-    <update id="cleanLogininfor">
+    <update id="clear">
         truncate table access_ctl_logs
     </update>
 
@@ -89,4 +107,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select count(1) from access_ctl_logs
     </select>
 
+    <delete id="deleteBefore" >
+        delete from access_ctl_logs where ts &lt;= #{endTime}
+    </delete>
 </mapper>

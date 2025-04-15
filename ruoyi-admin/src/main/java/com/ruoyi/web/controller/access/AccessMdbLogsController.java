@@ -1,44 +1,47 @@
 package com.ruoyi.web.controller.access;
 
-import com.ruoyi.access.domain.AccessMdbLogs;
-import com.ruoyi.access.mapper.AccessMdbLogsMapper;
-import com.ruoyi.access.service.IAccessMdbLogsService;
-import com.ruoyi.common.annotation.Log;
-import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.core.page.TableDataInfo;
-import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.common.utils.poi.ExcelUtil;
-import com.ruoyi.system.service.ISysDictTypeService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.io.*;
+import java.time.LocalDateTime;
+import java.time.Year;
+import java.time.format.DateTimeFormatter;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.access.domain.AccessCtlLogs;
+import com.ruoyi.access.domain.AccessMdbLogs;
+import com.ruoyi.access.mapper.AccessMdbLogsMapper;
+import com.ruoyi.access.service.IAccessMdbLogsService;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import com.ruoyi.common.annotation.Log;
+import com.ruoyi.common.core.controller.BaseController;
+import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * modbus控制日志Controller
  * 
  * @author ruoyi
- * @date 2025-04-13
+ * @date 2025-04-15
  */
 @RestController
-@RequestMapping("/access/mdb/logs")
+@RequestMapping("/access/logs/mdb")
 public class AccessMdbLogsController extends BaseController
 {
     @Autowired
@@ -117,73 +120,54 @@ public class AccessMdbLogsController extends BaseController
     @PreAuthorize("@ss.hasPermi('access:logs:remove')")
     @Log(title = "清空modbus控制日志", businessType = BusinessType.DELETE)
     @PostMapping("/clear")
-    public AjaxResult clear(@PathVariable Long[] ids)
+    public AjaxResult clear()
     {
         accessMdbLogsMapper.clear();
         return AjaxResult.success();
     }
 
-    @Scheduled(cron = "*/30 * * * * *")
-    public void parseLogFile() {
-        System.out.println("开始收集日志文件");
-        String filePath = "/var/access/mdb.log";
-        Path path = Paths.get(filePath);
-        List<AccessMdbLogs> entries = new ArrayList<>();
+    @Scheduled(cron = "0 */1 * * * *")
+    public void collect() throws IOException {
+        File file = new File("C:/var/access/mdb.log");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                AccessMdbLogs entry = parseLogLine(line);
-                if (entry != null) {
-                    entries.add(entry);
+                AccessMdbLogs mdbLog = new AccessMdbLogs();
+                String[] parts = line.split(" - ", 2);
+                if (parts.length != 2) {
+                    throw new IllegalArgumentException("无效的日志格式: " + line);
                 }
-            }
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        }
 
-        // 清空文件内容
-        try (BufferedWriter writer = Files.newBufferedWriter(path, StandardOpenOption.TRUNCATE_EXISTING)) {
-            // 写入空字符串即可清空
-            writer.write("");
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        }
+                mdbLog.setTs(LocalDateTime.parse(parts[0], formatter));
+                // 解析 key=value
+                String keyValuePart = parts[1];
+                Map<String, String> fields = new LinkedHashMap<>();
 
-        entries.forEach(entry -> accessMdbLogsService.insertAccessMdbLogs(entry));
-    }
-
-    @Autowired
-    private ISysDictTypeService dictTypeService;
-
-    private AccessMdbLogs parseLogLine(String logLine) {
-        if (logLine == null || logLine.isEmpty()) return null;
-
-        String timestamp = "";
-        String bracketContent = "";
-        String u = null, f = null, addr = null, num = null;
-
-        // 时间戳
-        Matcher timeMatcher = Pattern.compile("^(\\S+)").matcher(logLine);
-        if (timeMatcher.find()) {
-            timestamp = timeMatcher.group(1);
-        }
-
-        // 动态字段提取
-        Map<String, String> fieldMap = new HashMap<>();
-        String[] keys = {"uid", "fid", "addr", "number"};
-        for (String key : keys) {
-            Matcher m = Pattern.compile(key + "=(\\S+)").matcher(logLine);
-            if (m.find()) {
-                fieldMap.put(key, m.group(1));
+                Matcher kvMatcher = Pattern.compile("(\\w+)=([^,\\s]*)").matcher(keyValuePart);
+                while (kvMatcher.find()) {
+                    fields.put(kvMatcher.group(1), kvMatcher.group(2));
+                }
+                mdbLog.setTid(fields.get("TID"));
+                mdbLog.setPid(fields.get("PID"));
+                mdbLog.setLen(fields.get("LEN"));
+                mdbLog.setUid(fields.get("UID"));
+                mdbLog.setFunc(fields.get("FUNC"));
+                mdbLog.setAddr(fields.get("ADDR"));
+                mdbLog.setNumber(fields.get("NUMBER"));
+                mdbLog.setType(fields.get("type"));
+                accessMdbLogsService.insertAccessMdbLogs(mdbLog);
             }
         }
-
-        u = fieldMap.getOrDefault("uid", null);
-        f = fieldMap.getOrDefault("fid", null);
-        addr = fieldMap.getOrDefault("addr", null);
-        num = fieldMap.getOrDefault("number", null);
-
-        return new AccessMdbLogs(timestamp,u, f, addr, num);
     }
+
+    @Scheduled(cron = "0 15 2 * * *")
+    // @Scheduled(cron = "0/2 * * * * *")
+    public void expired() {
+        logger.info("清理过期数据");
+        LocalDateTime localDateTime = LocalDateTime.now().minusDays(183);
+        accessMdbLogsMapper.deleteBefore(localDateTime);
+    }
+
 }

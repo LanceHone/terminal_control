@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-// 查询控制日志列表
+// 查询访问控制日志列表
 export function listLogs(query) {
   return request({
     url: '/access/logs/list',
@@ -9,7 +9,7 @@ export function listLogs(query) {
   })
 }
 
-// 查询控制日志详细
+// 查询访问控制日志详细
 export function getLogs(id) {
   return request({
     url: '/access/logs/' + id,
@@ -17,7 +17,7 @@ export function getLogs(id) {
   })
 }
 
-// 新增控制日志
+// 新增访问控制日志
 export function addLogs(data) {
   return request({
     url: '/access/logs',
@@ -26,7 +26,7 @@ export function addLogs(data) {
   })
 }
 
-// 修改控制日志
+// 修改访问控制日志
 export function updateLogs(data) {
   return request({
     url: '/access/logs',
@@ -35,7 +35,7 @@ export function updateLogs(data) {
   })
 }
 
-// 删除控制日志
+// 删除访问控制日志
 export function delLogs(id) {
   return request({
     url: '/access/logs/' + id,
@@ -50,7 +50,6 @@ export function clear() {
     method: 'post'
   })
 }
-
 
 // 删除modbus控制日志
 export function threshold(data) {

@@ -4,7 +4,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.ruoyi.access.mapper.AccessCtlLogsMapper;
+import com.ruoyi.access.mapper.AccessMdbLogsMapper;
 import com.ruoyi.framework.web.service.SysLoginService;
+import com.ruoyi.system.service.ISysDictDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -87,10 +90,29 @@ public class SysLoginController
         ajax.put("user", user);
         ajax.put("roles", roles);
         ajax.put("permissions", permissions);
-        ajax.put("logSizeMsg", "某某日志已经达到阈值，请处理");
+
+        String size = dictDataService.selectDictDataById(118L).getDictValue();
+        String rate = dictDataService.selectDictDataById(121L).getDictValue();
+
+        double threshold = Double.parseDouble(size) * Double.parseDouble(rate) * 1024;
+
+        Integer ctl = accessCtlLogsMapper.countSize();
+        Integer mdb = accessMdbLogsMapper.countSize();
+
+        if (3.7 + (ctl * 0.052272727) > threshold) {
+            ajax.put("logSizeMsg", "访问控制日志已经达到阈值，请处理");
+        } else if (3.7 + (mdb * 0.03542857142) > threshold) {
+            ajax.put("logSizeMsg", "modbus日志已经达到阈值，请处理");
+        }
         return ajax;
     }
 
+    @Autowired
+    ISysDictDataService dictDataService;
+    @Autowired
+    AccessCtlLogsMapper accessCtlLogsMapper;
+    @Autowired
+    AccessMdbLogsMapper accessMdbLogsMapper;
     /**
      * 获取路由信息
      * 

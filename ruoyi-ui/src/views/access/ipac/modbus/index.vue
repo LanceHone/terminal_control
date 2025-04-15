@@ -348,7 +348,7 @@ export default {
     },
     /** 修改状态 */
     handleStatusChange(row, value) {
-      const status = !value ? '0' : '1';
+      const status = value ? '1' : '0';
       // 调用接口更新状态
       updateModbusStatus({ id: row.id, status }).then(() => {
         this.$message.success("状态更新成功");

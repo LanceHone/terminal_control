@@ -8,7 +8,7 @@ import java.util.List;
  * modbus控制日志Service接口
  * 
  * @author ruoyi
- * @date 2025-04-13
+ * @date 2025-04-15
  */
 public interface IAccessMdbLogsService 
 {

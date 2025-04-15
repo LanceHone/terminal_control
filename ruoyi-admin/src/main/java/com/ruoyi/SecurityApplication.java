@@ -6,12 +6,6 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.NetworkInterface;
-import java.net.Socket;
-import java.util.Enumeration;
-
 /**
  * 启动程序
  * 
@@ -37,5 +31,4 @@ public class SecurityApplication
                 "   ╚══╝ ");
 
     }
-
 }

@@ -3,14 +3,14 @@
 
 
     <el-dialog :title="currentRow.label" :visible.sync="show">
-      <el-input v-model="value" autocomplete="off" style="margin-top: 30px;"></el-input>
+      <el-input v-model="value" type="number" autocomplete="off" style="margin-top: 30px;"></el-input>
       <div slot="footer" class="dialog-footer">
         <el-button @click="show = !show">取 消</el-button>
         <el-button @click="confirm">确定</el-button>
       </div>
     </el-dialog>
 
-    <el-table :data="dict.type.sys_settings" style="width: 100%">
+    <el-table :data="tableData" style="width: 100%">
       <el-table-column prop="label" label="设置项目"></el-table-column>
       <el-table-column label="阈值" style="width: 100%;">
         <template slot-scope="scope">
@@ -71,11 +71,19 @@ export default {
   methods: {
     confirm(row) {
       this.$modal.confirm('是否确认设置项"' + this.currentRow.label + '"的数据项？').then(() =>{
-        return threshold(this.currentRow);
+        this.currentRow.raw.dictValue = this.value
+        return threshold(this.currentRow.raw);
       }).then((res) => {
         this.tableData = res.data
         this.$modal.msgSuccess("设置成功");
+        this.tableData = this.dict.type.sys_settings
         this.show = false;
+        this.tableData.forEach(item => {
+          if (item.label === this.currentRow.label) {
+            item.value = this.value
+          }
+        })
+        this.$forceUpdate()
       }).catch(() => { });
     },
     click(row) {

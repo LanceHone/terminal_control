@@ -2,25 +2,65 @@
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="时间" prop="ts">
-        <el-input
+        <el-date-picker clearable
           v-model="queryParams.ts"
-          placeholder="请输入时间"
+          type="datetime"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          placeholder="请选择时间">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="tid" prop="tid">
+        <el-input
+          v-model="queryParams.tid"
+          placeholder="请输入tid"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="访问地址" prop="addr">
+      <el-form-item label="pid" prop="pid">
+        <el-input
+          v-model="queryParams.pid"
+          placeholder="请输入pid"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="长度" prop="len">
+        <el-input
+          v-model="queryParams.len"
+          placeholder="请输入长度"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="设备id" prop="uid">
+        <el-input
+          v-model="queryParams.uid"
+          placeholder="请输入设备id"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="功能码" prop="func">
+        <el-input
+          v-model="queryParams.func"
+          placeholder="请输入功能码"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="操作对象" prop="addr">
         <el-input
           v-model="queryParams.addr"
-          placeholder="请输入访问地址"
+          placeholder="请输入操作对象"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="写入值" prop="value">
+      <el-form-item label="操作值" prop="number">
         <el-input
-          v-model="queryParams.value"
-          placeholder="请输入写入值"
+          v-model="queryParams.number"
+          placeholder="请输入操作值"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -32,25 +72,35 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button
-          type="danger"
+          type="primary"
           plain
-          icon="el-icon-delete"
+          icon="el-icon-plus"
           size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['access:logs:remove']"
-        >删除</el-button>
+          @click="handleAdd"
+          v-hasPermi="['access:logs:add']"
+        >新增</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
+          type="success"
+          plain
+          icon="el-icon-edit"
+          size="mini"
+          :disabled="single"
+          @click="handleUpdate"
+          v-hasPermi="['access:logs:edit']"
+        >修改</el-button>
+      </el-col> -->
+      <el-col :span="1.5">
+        <el-button
           type="danger"
           plain
           icon="el-icon-delete"
           size="mini"
-          @click="handleClean"
-          v-hasPermi="['access:logs:list']"
+          @click="handleDelete"
+          v-hasPermi="['access:logs:remove']"
         >清空</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -68,11 +118,34 @@
 
     <el-table v-loading="loading" :data="logsList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
+      <!-- <el-table-column label="" align="center" prop="id" /> -->
       <el-table-column label="时间" align="center" prop="ts" />
-      <el-table-column label="设备id" align="center" prop="device" />
-      <el-table-column label="类型" align="center" prop="type" />
-      <el-table-column label="访问地址" align="center" prop="addr" />
-      <el-table-column label="写入值" align="center" prop="value" />
+      <el-table-column label="动作" align="center" prop="type" />
+      <el-table-column label="tid" align="center" prop="tid" />
+      <el-table-column label="pid" align="center" prop="pid" />
+      <el-table-column label="长度" align="center" prop="len" />
+      <el-table-column label="设备id" align="center" prop="uid" />
+      <el-table-column label="功能码" align="center" prop="func" />
+      <el-table-column label="操作对象" align="center" prop="addr" />
+      <el-table-column label="操作值" align="center" prop="number" />
+      <!-- <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+            v-hasPermi="['access:logs:edit']"
+          >修改</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-delete"
+            @click="handleDelete(scope.row)"
+            v-hasPermi="['access:logs:remove']"
+          >删除</el-button>
+        </template>
+      </el-table-column> -->
     </el-table>
     
     <pagination
@@ -89,11 +162,26 @@
         <el-form-item label="时间" prop="ts">
           <el-input v-model="form.ts" placeholder="请输入时间" />
         </el-form-item>
-        <el-form-item label="访问地址" prop="addr">
-          <el-input v-model="form.addr" placeholder="请输入访问地址" />
+        <el-form-item label="tid" prop="tid">
+          <el-input v-model="form.tid" placeholder="请输入tid" />
         </el-form-item>
-        <el-form-item label="写入值" prop="value">
-          <el-input v-model="form.value" placeholder="请输入写入值" />
+        <el-form-item label="pid" prop="pid">
+          <el-input v-model="form.pid" placeholder="请输入pid" />
+        </el-form-item>
+        <el-form-item label="长度" prop="len">
+          <el-input v-model="form.len" placeholder="请输入长度" />
+        </el-form-item>
+        <el-form-item label="设备id" prop="uid">
+          <el-input v-model="form.uid" placeholder="请输入设备id" />
+        </el-form-item>
+        <el-form-item label="功能码" prop="func">
+          <el-input v-model="form.func" placeholder="请输入功能码" />
+        </el-form-item>
+        <el-form-item label="操作对象" prop="addr">
+          <el-input v-model="form.addr" placeholder="请输入操作对象" />
+        </el-form-item>
+        <el-form-item label="操作值" prop="number">
+          <el-input v-model="form.number" placeholder="请输入操作值" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -135,8 +223,13 @@ export default {
         pageSize: 10,
         ts: null,
         type: null,
+        tid: null,
+        pid: null,
+        len: null,
+        uid: null,
+        func: null,
         addr: null,
-        value: null
+        number: null
       },
       // 表单参数
       form: {},
@@ -158,15 +251,6 @@ export default {
         this.loading = false;
       });
     },
-        /** 清空按钮操作 */
-        handleClean() {
-      this.$modal.confirm('是否确认清空所有登录日志数据项？').then(function() {
-        return clear();
-      }).then(() => {
-        this.getList();
-        this.$modal.msgSuccess("清空成功");
-      }).catch(() => {});
-    },
     // 取消按钮
     cancel() {
       this.open = false;
@@ -178,8 +262,13 @@ export default {
         id: null,
         ts: null,
         type: null,
+        tid: null,
+        pid: null,
+        len: null,
+        uid: null,
+        func: null,
         addr: null,
-        value: null
+        number: null
       };
       this.resetForm("form");
     },
@@ -238,8 +327,8 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$modal.confirm('是否确认删除modbus控制日志编号为"' + ids + '"的数据项？').then(function() {
-        return delLogs(ids);
+      this.$modal.confirm('是否确认清空？').then(function() {
+        return clear();
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
@@ -247,7 +336,7 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('access/logs/export', {
+      this.download('access/logs/mdb/export', {
         ...this.queryParams
       }, `logs_${new Date().getTime()}.xlsx`)
     }

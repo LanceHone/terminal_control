@@ -1,53 +1,70 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.mapper.AccessMdbLogsMapper">
-    
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.access.mapper.AccessMdbLogsMapper">
+
     <resultMap type="AccessMdbLogs" id="AccessMdbLogsResult">
         <result property="id"    column="id"    />
         <result property="ts"    column="ts"    />
-        <result property="device"    column="device"    />
         <result property="type"    column="type"    />
+        <result property="tid"    column="tid"    />
+        <result property="pid"    column="pid"    />
+        <result property="len"    column="len"    />
+        <result property="uid"    column="uid"    />
+        <result property="func"    column="func"    />
         <result property="addr"    column="addr"    />
-        <result property="value"    column="value"    />
+        <result property="number"    column="number"    />
     </resultMap>
 
     <sql id="selectAccessMdbLogsVo">
-        select id, ts, type, addr, value from access_mdb_logs
+        select id, ts, type, tid, pid, len, uid, func, addr, number from access_mdb_logs
     </sql>
 
     <select id="selectAccessMdbLogsList" parameterType="AccessMdbLogs" resultMap="AccessMdbLogsResult">
         <include refid="selectAccessMdbLogsVo"/>
-        <where>  
-            <if test="ts != null  and ts != ''"> and ts = #{ts}</if>
+        <where>
+            <if test="ts != null "> and ts = #{ts}</if>
             <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="tid != null  and tid != ''"> and tid = #{tid}</if>
+            <if test="pid != null  and pid != ''"> and pid = #{pid}</if>
+            <if test="len != null  and len != ''"> and len = #{len}</if>
+            <if test="uid != null  and uid != ''"> and uid = #{uid}</if>
+            <if test="func != null  and func != ''"> and func = #{func}</if>
             <if test="addr != null  and addr != ''"> and addr = #{addr}</if>
-            <if test="value != null  and value != ''"> and value = #{value}</if>
+            <if test="number != null  and number != ''"> and number = #{number}</if>
         </where>
     </select>
-    
+
     <select id="selectAccessMdbLogsById" parameterType="Long" resultMap="AccessMdbLogsResult">
         <include refid="selectAccessMdbLogsVo"/>
         where id = #{id}
     </select>
 
-    <insert id="insertAccessMdbLogs" parameterType="AccessMdbLogs">
+    <insert id="insertAccessMdbLogs" parameterType="AccessMdbLogs" useGeneratedKeys="true" keyProperty="id">
         insert into access_mdb_logs
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">id,</if>
             <if test="ts != null">ts,</if>
             <if test="type != null">type,</if>
+            <if test="tid != null">tid,</if>
+            <if test="pid != null">pid,</if>
+            <if test="len != null">len,</if>
+            <if test="uid != null">uid,</if>
+            <if test="func != null">func,</if>
             <if test="addr != null">addr,</if>
-            <if test="value != null">value,</if>
-         </trim>
+            <if test="number != null">number,</if>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null">#{id},</if>
             <if test="ts != null">#{ts},</if>
             <if test="type != null">#{type},</if>
+            <if test="tid != null">#{tid},</if>
+            <if test="pid != null">#{pid},</if>
+            <if test="len != null">#{len},</if>
+            <if test="uid != null">#{uid},</if>
+            <if test="func != null">#{func},</if>
             <if test="addr != null">#{addr},</if>
-            <if test="value != null">#{value},</if>
-         </trim>
+            <if test="number != null">#{number},</if>
+        </trim>
     </insert>
 
     <update id="updateAccessMdbLogs" parameterType="AccessMdbLogs">
@@ -55,8 +72,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="SET" suffixOverrides=",">
             <if test="ts != null">ts = #{ts},</if>
             <if test="type != null">type = #{type},</if>
+            <if test="tid != null">tid = #{tid},</if>
+            <if test="pid != null">pid = #{pid},</if>
+            <if test="len != null">len = #{len},</if>
+            <if test="uid != null">uid = #{uid},</if>
+            <if test="func != null">func = #{func},</if>
             <if test="addr != null">addr = #{addr},</if>
-            <if test="value != null">value = #{value},</if>
+            <if test="number != null">number = #{number},</if>
         </trim>
         where id = #{id}
     </update>
@@ -66,17 +88,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteAccessMdbLogsByIds" parameterType="String">
-        delete from access_mdb_logs where id in 
+        delete from access_mdb_logs where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>
 
-    <update id="cleanLogininfor">
+    <update id="clear">
         truncate table access_mdb_logs
     </update>
 
     <select id="countSize" resultType="java.lang.Integer">
         select count(1) from access_mdb_logs
     </select>
+
+    <delete id="deleteBefore" >
+        delete from access_ctl_logs where ts &lt;= #{endTime}
+    </delete>
 </mapper>

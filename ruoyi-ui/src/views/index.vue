@@ -2,7 +2,7 @@
   <div class="app-container home">
     <el-row :gutter="20">
       <el-col :sm="24" :lg="12" style="padding-left: 20px">
-        <h2>工控网络隔离装置测试环境</h2>
+        <h2>工控网络隔离装置</h2>
 <!--        <p>-->
 <!--          <el-button-->
 <!--            size="mini"-->

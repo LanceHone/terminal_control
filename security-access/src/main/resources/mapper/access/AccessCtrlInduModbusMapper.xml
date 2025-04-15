@@ -77,7 +77,7 @@
 
     <select id="findAllActive" resultMap="ModbusResult">
         <include refid="selectModbusVo"/>
-        where status = 0
+        where status = 1
     </select>
     <select id="checkAccess" resultType="com.ruoyi.access.domain.AccessPolicyInduModbus">
         SELECT exists(

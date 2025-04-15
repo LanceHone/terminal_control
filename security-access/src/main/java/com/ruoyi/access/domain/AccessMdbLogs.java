@@ -1,123 +1,169 @@
 package com.ruoyi.access.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDateTime;
 
 /**
  * modbus控制日志对象 access_mdb_logs
- * 
+ *
  * @author ruoyi
- * @date 2025-04-13
+ * @date 2025-04-15
  */
 public class AccessMdbLogs extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
-    /** $column.columnComment */
+    /** id */
     private Long id;
 
     /** 时间 */
-    @Excel(name = "时间")
-    private String ts;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime ts;
 
-    /** 访问地址 */
-    @Excel(name = "设备id")
-    private String device;
-
-
-    public AccessMdbLogs(String timestamp, String u, String f, String addr, String num) {
-        this.ts = timestamp;
-        this.device = u;
-        this.value = num;
-        this.addr = addr;
-        this.type = f;
-    }
-
-    public String getDevice() {
-        return device;
-    }
-
-    public void setDevice(String device) {
-        this.device = device;
-    }
-
-    /** 类型 */
-    @Excel(name = "功能码")
+    /** 动作 */
+    @Excel(name = "动作")
     private String type;
 
-    /** 访问地址 */
-    @Excel(name = "访问地址")
+    /** tid */
+    @Excel(name = "tid")
+    private String tid;
+
+    /** pid */
+    @Excel(name = "pid")
+    private String pid;
+
+    /** len */
+    @Excel(name = "len")
+    private String len;
+
+    /** 设备id */
+    @Excel(name = "设备id")
+    private String uid;
+
+    /** 功能码 */
+    @Excel(name = "功能码")
+    private String func;
+
+    /** 操作对象 */
+    @Excel(name = "操作对象")
     private String addr;
 
-    @Excel(name = "读写")
-    private String operate;
-    @JsonProperty("rw")
-    public String getOperate()
-    {
-        return Integer.parseInt(type) < 5 ? "读" : "写";
-    }
+    /** 操作值 */
+    @Excel(name = "操作值")
+    private String number;
 
-    /** 写入值 */
-    @Excel(name = "写入值")
-    private String value;
-
-    public void setId(Long id) 
+    public void setId(Long id)
     {
         this.id = id;
     }
 
-    public Long getId() 
+    public Long getId()
     {
         return id;
     }
-    public void setTs(String ts) 
+    public void setTs(LocalDateTime ts)
     {
         this.ts = ts;
     }
 
-    public String getTs() 
+    public LocalDateTime getTs()
     {
         return ts;
     }
-    public void setType(String type) 
+    public void setType(String type)
     {
         this.type = type;
     }
 
-    public String getType() 
+    public String getType()
     {
         return type;
     }
-    public void setAddr(String addr) 
+    public void setTid(String tid)
+    {
+        this.tid = tid;
+    }
+
+    public String getTid()
+    {
+        return tid;
+    }
+    public void setPid(String pid)
+    {
+        this.pid = pid;
+    }
+
+    public String getPid()
+    {
+        return pid;
+    }
+    public void setLen(String len)
+    {
+        this.len = len;
+    }
+
+    public String getLen()
+    {
+        return len;
+    }
+    public void setUid(String uid)
+    {
+        this.uid = uid;
+    }
+
+    public String getUid()
+    {
+        return uid;
+    }
+    public void setFunc(String func)
+    {
+        this.func = func;
+    }
+
+    public String getFunc()
+    {
+        return func;
+    }
+    public void setAddr(String addr)
     {
         this.addr = addr;
     }
 
-    public String getAddr() 
+    public String getAddr()
     {
         return addr;
     }
-    public void setValue(String value) 
+    public void setNumber(String number)
     {
-        this.value = value;
+        this.number = number;
     }
 
-    public String getValue() 
+    public String getNumber()
     {
-        return value;
+        return number;
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("ts", getTs())
-            .append("type", getType())
-            .append("addr", getAddr())
-            .append("value", getValue())
-            .toString();
+                .append("id", getId())
+                .append("ts", getTs())
+                .append("type", getType())
+                .append("tid", getTid())
+                .append("pid", getPid())
+                .append("len", getLen())
+                .append("uid", getUid())
+                .append("func", getFunc())
+                .append("addr", getAddr())
+                .append("number", getNumber())
+                .toString();
     }
 }

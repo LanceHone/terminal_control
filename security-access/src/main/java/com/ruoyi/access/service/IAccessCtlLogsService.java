@@ -5,57 +5,57 @@ import com.ruoyi.access.domain.AccessCtlLogs;
 import java.util.List;
 
 /**
- * 控制日志Service接口
+ * 访问控制日志Service接口
  * 
  * @author ruoyi
- * @date 2025-04-13
+ * @date 2025-04-15
  */
 public interface IAccessCtlLogsService 
 {
     /**
-     * 查询控制日志
+     * 查询访问控制日志
      * 
-     * @param id 控制日志主键
-     * @return 控制日志
+     * @param id 访问控制日志主键
+     * @return 访问控制日志
      */
     public AccessCtlLogs selectAccessCtlLogsById(Long id);
 
     /**
-     * 查询控制日志列表
+     * 查询访问控制日志列表
      * 
-     * @param accessCtlLogs 控制日志
-     * @return 控制日志集合
+     * @param accessCtlLogs 访问控制日志
+     * @return 访问控制日志集合
      */
     public List<AccessCtlLogs> selectAccessCtlLogsList(AccessCtlLogs accessCtlLogs);
 
     /**
-     * 新增控制日志
+     * 新增访问控制日志
      * 
-     * @param accessCtlLogs 控制日志
+     * @param accessCtlLogs 访问控制日志
      * @return 结果
      */
     public int insertAccessCtlLogs(AccessCtlLogs accessCtlLogs);
 
     /**
-     * 修改控制日志
+     * 修改访问控制日志
      * 
-     * @param accessCtlLogs 控制日志
+     * @param accessCtlLogs 访问控制日志
      * @return 结果
      */
     public int updateAccessCtlLogs(AccessCtlLogs accessCtlLogs);
 
     /**
-     * 批量删除控制日志
+     * 批量删除访问控制日志
      * 
-     * @param ids 需要删除的控制日志主键集合
+     * @param ids 需要删除的访问控制日志主键集合
      * @return 结果
      */
     public int deleteAccessCtlLogsByIds(Long[] ids);
 
     /**
-     * 删除控制日志信息
+     * 删除访问控制日志信息
      * 
-     * @param id 控制日志主键
+     * @param id 访问控制日志主键
      * @return 结果
      */
     public int deleteAccessCtlLogsById(Long id);
