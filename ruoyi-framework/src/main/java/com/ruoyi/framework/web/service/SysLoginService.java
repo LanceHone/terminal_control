@@ -146,7 +146,7 @@ public class SysLoginService {
         }
 
         LocalDateTime lastUpdated = user.getPasswordUpdatedTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        // return lastUpdated.plusDays(UserConstants.PASSWORD_EXPIRATION_DAYS).isBefore(LocalDateTime.now());
+        // return lastUpdated.plusDays(UserConstants.PASSWORD_EXPIRATION_DAYS).isBefore(LocalDateTime.now());//fixme 发布时使用这一行
         return lastUpdated.plusSeconds(UserConstants.PASSWORD_EXPIRATION_DAYS).isBefore(LocalDateTime.now());
     }
 
