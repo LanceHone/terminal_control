@@ -128,7 +128,9 @@ public class AccessMdbLogsController extends BaseController
 
     @Scheduled(cron = "0 */1 * * * *")
     public void collect() throws IOException {
-        File file = new File("C:/var/access/mdb.log");
+        File file = new File("/var/access/mdb.log");
+
+        if (!file.exists()) return;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -166,7 +168,8 @@ public class AccessMdbLogsController extends BaseController
     // @Scheduled(cron = "0/2 * * * * *")
     public void expired() {
         logger.info("清理过期数据");
-        LocalDateTime localDateTime = LocalDateTime.now().minusDays(183);
+        // LocalDateTime localDateTime = LocalDateTime.now().minusDays(183);
+        LocalDateTime localDateTime = LocalDateTime.now().minusMinutes(10);//fixme 发布时候修改
         accessMdbLogsMapper.deleteBefore(localDateTime);
     }
 

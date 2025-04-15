@@ -138,7 +138,10 @@ public class AccessCtlLogsController extends BaseController
     @Autowired AccessCtlLogsMapper accessCtlLogsMapper;
     @Scheduled(cron = "0 */1 * * * *")
     public void collect() {
-        File file = new File("C:/var/access/acc_ctl.log");
+        File file = new File("/var/access/acc_ctl.log");
+
+        if (!file.exists()) return;
+
         int currentYear = Year.now().getValue();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy MMM dd HH:mm:ss", Locale.ENGLISH);
 
@@ -184,7 +187,8 @@ public class AccessCtlLogsController extends BaseController
     // @Scheduled(cron = "0/2 * * * * *")
     public void expired() {
         logger.info("清理过期数据");
-        LocalDateTime localDateTime = LocalDateTime.now().minusDays(183);
+        // LocalDateTime localDateTime = LocalDateTime.now().minusDays(183);//fixme 发布时候修改
+        LocalDateTime localDateTime = LocalDateTime.now().minusMinutes(10);//fixme 发布时候修改
         accessCtlLogsMapper.deleteBefore(localDateTime);
     }
 }
