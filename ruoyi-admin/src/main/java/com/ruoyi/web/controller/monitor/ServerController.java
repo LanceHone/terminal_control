@@ -38,7 +38,7 @@ public class ServerController {
     @Log(title = "系统时间同步设置", businessType = BusinessType.UPDATE)
     public AjaxResult syncSwitch(@RequestParam String time) throws Exception {
         RuntimeUtil.execForStr("sudo systemctl enable --now chronyd");
-        RuntimeUtil.execForStr("sudo date -s " + time);
+        RuntimeUtil.execForStr("sudo date -s \"" + time + "\"");
         RuntimeUtil.execForStr("timedatectl set-ntp true");
         return AjaxResult.success("设置成功");
     }
@@ -68,14 +68,16 @@ public class ServerController {
             // 上传并返回新文件名称
             String fileName = FileUploadUtils.upload(filePath, file);
             String url = serverConfig.getUrl() + fileName;
-            AjaxResult ajax = AjaxResult.success();
+            AjaxResult ajax = AjaxResult.success("上传成功");
             ajax.put("url", url);
             ajax.put("fileName", fileName);
             ajax.put("newFileName", FileUtils.getName(fileName));
             ajax.put("originalFilename", file.getOriginalFilename());
 
             String path = filePath + fileName.replace("", "/profile/upload/");
-            RuntimeUtil.execForStr("tar -zxvf "+ path + " -C " + "/home/dap/rtfk");
+            RuntimeUtil.execForStr("mv " + path + " " + "/home/dap/rtfk/nginx/dist.tar");
+            // RuntimeUtil.execForStr("tar -xf /root/dist.tar -C /path/to/nginx/html/");//fixme 发布时改路径
+            RuntimeUtil.execForStr("tar -xf /home/dap/rtfk/nginx/dist.tar");
             return ajax;
         } catch (Exception e) {
             return AjaxResult.error(e.getMessage());

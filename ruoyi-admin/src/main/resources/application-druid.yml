@@ -9,7 +9,7 @@ spring:
 #                url: jdbc:mysql://localhost:3306/security1?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
 #                url: jdbc:mysql://192.168.0.189:3306/security1?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
 #                url: jdbc:mysql://82.157.210.34:3306/security1?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-                url: jdbc:mysql://localhost:33066/security?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+                url: jdbc:mysql://localhost:33066/security?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8
 #                username: dap
                 username: root
 #                password: admin
@@ -68,7 +68,7 @@ spring:
     redis:
         # 地址
         #    host: 82.157.210.34
-        host: redis
+        host: localhost
         #    host: localhost
         # 端口，默认为6379
         port: 6379

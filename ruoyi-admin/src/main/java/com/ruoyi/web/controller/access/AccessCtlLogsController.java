@@ -1,6 +1,8 @@
 package com.ruoyi.web.controller.access;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
@@ -180,6 +182,13 @@ public class AccessCtlLogsController extends BaseController
             throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+        // 清空文件内容
+        try (BufferedWriter writer = Files.newBufferedWriter(file.toPath(), StandardOpenOption.TRUNCATE_EXISTING)) {
+            // 写入空字符串即可清空
+            writer.write("");
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
         }
     }
 

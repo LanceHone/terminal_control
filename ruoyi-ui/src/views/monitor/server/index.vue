@@ -19,7 +19,7 @@
     <el-row>
       <el-col :sm="24" class="card-box" style="padding-left: 20px">
         <div style="display:flex;justify-content: space-between;align-items: center;width:100%">
-          <h2>工控网络隔离装置 V_1.0.0</h2>
+          <h2>工控网络隔离装置 V_1.0.4</h2>
           <p>
             <el-button size="mini" icon="el-icon-upload" plain @click="upload_popup = true">产品升级</el-button>
           </p>
@@ -63,10 +63,10 @@
                     <div class="cell">{{ server.clock["Local time"] }}</div>
                   </td>
                   <td class="el-table__cell is-leaf">
-                    <div class="cell">{{ "Tue 2025-03-18 12:10:51 CST" }}</div>
+                    <div class="cell">{{ server.clock["Universal time"] }}</div>
                   </td>
                   <td class="el-table__cell is-leaf">
-                    <div class="cell">{{ "Tue 2025-03-18 12:10:51" }}</div>
+                    <div class="cell">{{ server.clock["RTC time"] }}</div>
                   </td>
                   <td class="el-table__cell is-leaf">
                     <div class="cell">{{ server.clock["Time zone"] }}</div>
@@ -555,6 +555,7 @@ export default {
     },
     // 文件上传中处理
     handleFileUploadProgress(event, file, fileList) {
+      // this.$modal.loading("正在上传文件，请稍候！");
       this.upload.isUploading = true;
     },
     // 文件上传成功处理
