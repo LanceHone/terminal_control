@@ -36,7 +36,7 @@ iptables -F ICMP_FLOOD_CHECK
 # Ddos fixme 发布时修改
 iptables -A SYN_FLOOD_CHECK -m recent --name synrate --rcheck --seconds 1 --hitcount 6 -j LOG --log-prefix "[SYN_FLOOD] " --log-level 4
 iptables -A SYN_FLOOD_CHECK -m recent --name synrate --set
-iptables -A UDP_FLOOD_CHECK -m recent --name udprate --rcheck --seconds 1 --hitcount 19 -j LOG --log-prefix "[UDP_FLOOD] " --log-level 4
+iptables -A UDP_FLOOD_CHECK -m recent --name udprate --rcheck --seconds 1 --hitcount 11 -j LOG --log-prefix "[UDP_FLOOD] " --log-level 4
 iptables -A UDP_FLOOD_CHECK -m recent --name udprate --set
 iptables -A ICMP_FLOOD_CHECK -m recent --name icmprate --rcheck --seconds 1 --hitcount 11 -j LOG --log-prefix "[ICMP_FLOOD] " --log-level 4
 iptables -A ICMP_FLOOD_CHECK -m recent --name icmprate --set
@@ -45,7 +45,6 @@ iptables -A INPUT -p tcp --syn -j SYN_FLOOD_CHECK
 iptables -A INPUT -p udp -j UDP_FLOOD_CHECK
 iptables -A INPUT -p icmp --icmp-type echo-request -j ICMP_FLOOD_CHECK
 
-#iptables -A INPUT -p icmp --icmp-type echo-request -m length --length 1000:65535 -j LOG --log-prefix "[PING_OF_DEATH] " --log-level 4
 iptables -A INPUT -p icmp --icmp-type echo-request -m length --length 100:65535 -j LOG --log-prefix "[PING_OF_DEATH] " --log-level 4
 
 # 直接放行
