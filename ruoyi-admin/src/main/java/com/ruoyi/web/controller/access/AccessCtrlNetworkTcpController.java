@@ -275,9 +275,9 @@ public class AccessCtrlNetworkTcpController extends BaseController {
     public AjaxResult ping(@PathVariable Boolean enable) {
         String cmd;
         if (!enable) {
-            cmd = "iptables -D INPUT -p icmp --icmp-type echo-request -m length --length 1000:65535 -j DROP";
+            cmd = "iptables -D INPUT -p icmp --icmp-type echo-request -m length --length 100:65535 -j DROP";
         } else {
-            cmd = "iptables -I INPUT 1 -p icmp --icmp-type echo-request -m length --length 1000:65535 -j DROP";
+            cmd = "iptables -I INPUT 1 -p icmp --icmp-type echo-request -m length --length 100:65535 -j DROP";
         }
         logger.info(cmd);
         RuntimeUtil.execForStr(cmd);
@@ -291,9 +291,9 @@ public class AccessCtrlNetworkTcpController extends BaseController {
     public AjaxResult icmp(@PathVariable Boolean enable) {
         String cmd;
         if (!enable) {
-            cmd = "iptables -D INPUT -p icmp --icmp-type echo-request -m limit --limit 1/s --limit-burst 5 -j ACCEPT";
+            cmd = "iptables -D ICMP_FLOOD_CHECK -m recent --name icmprate --rcheck --seconds 1 --hitcount 11 -j DROP";
         } else {
-            cmd = "iptables -I INPUT 1 -p icmp --icmp-type echo-request -m limit --limit 1/s --limit-burst 5 -j ACCEPT";
+            cmd = "iptables -A ICMP_FLOOD_CHECK -m recent --name icmprate --rcheck --seconds 1 --hitcount 11 -j DROP";
         }
         logger.info(cmd);
         RuntimeUtil.execForStr(cmd);
@@ -308,9 +308,9 @@ public class AccessCtrlNetworkTcpController extends BaseController {
 
         String cmd;
         if (!enable) {
-            cmd = "iptables -D UDP_FLOOD_CHECK -m recent --name udprate --rcheck --seconds 1 --hitcount 101 -j DROP";
+            cmd = "iptables -D UDP_FLOOD_CHECK -m recent --name udprate --rcheck --seconds 1 --hitcount 19 -j DROP";
         } else {
-            cmd = "iptables -A UDP_FLOOD_CHECK -m recent --name udprate --rcheck --seconds 1 --hitcount 101 -j DROP";
+            cmd = "iptables -A UDP_FLOOD_CHECK -m recent --name udprate --rcheck --seconds 1 --hitcount 19 -j DROP";
         }
         logger.info(cmd);
         RuntimeUtil.execForStr(cmd);
@@ -333,8 +333,8 @@ public class AccessCtrlNetworkTcpController extends BaseController {
             cmd1 =  "iptables -A SYN_FLOOD_CHECK -m recent --name synrate --rcheck --seconds 1 --hitcount 6 -j DROP";
         }
         logger.info(cmd);
-        RuntimeUtil.execForStr(cmd);
-        RuntimeUtil.execForStr("sysctl -p");//重启生效
+        // RuntimeUtil.execForStr(cmd);
+        // RuntimeUtil.execForStr("sysctl -p");//重启生效
         RuntimeUtil.execForStr(cmd1);
         synStatus = enable;
         return AjaxResult.success();

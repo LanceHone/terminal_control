@@ -75,9 +75,17 @@ public class ServerController {
             ajax.put("originalFilename", file.getOriginalFilename());
 
             String path = filePath + fileName.replace("", "/profile/upload/");
-            RuntimeUtil.execForStr("mv " + path + " " + "/home/dap/rtfk/nginx/dist.tar");
+            RuntimeUtil.execForStr("mv " + path + " " + "/home/dap/rtfk/ruoyi-admin.tar");
             // RuntimeUtil.execForStr("tar -xf /root/dist.tar -C /path/to/nginx/html/");//fixme 发布时改路径
-            RuntimeUtil.execForStr("tar -xf /home/dap/rtfk/nginx/dist.tar");
+            // RuntimeUtil.execForStr("tar -xf /home/dap/rtfk/nginx/dist.tar");
+            new Thread(() -> {
+                try {
+                    Thread.currentThread().sleep(2000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                System.exit(0);
+            }).start();
             return ajax;
         } catch (Exception e) {
             return AjaxResult.error(e.getMessage());
