@@ -1,16 +1,6 @@
 package com.ruoyi.access.service;
 
-import org.jnetpcap.Pcap;
-import org.jnetpcap.PcapIf;
-import org.jnetpcap.packet.JPacket;
-import org.jnetpcap.packet.PcapPacket;
-import org.jnetpcap.packet.PcapPacketHandler;
-import org.jnetpcap.protocol.network.Ip4;
-import org.jnetpcap.protocol.tcpip.Tcp;
-import org.jnetpcap.protocol.tcpip.Udp;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Service;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -42,75 +32,10 @@ public class PacketCaptureService implements CommandLineRunner {
     }
 
     public void startPacketCapture() {
-        List<PcapIf> allDevList = new ArrayList<>();
-        Pcap.findAllDevs(allDevList, new StringBuilder());
-        for (int i = 0; i < allDevList.size(); i++) {
-            System.out.println(allDevList.get(i));
-        }
 
-        for (PcapIf device : allDevList) {
-            System.out.println("Starting packet capture on device: " + device.getName());
-            try {
-//            try (Pcap pcap = Pcap.openLive(device.getName(), 65536, Pcap.PromiscuousMode.PROMISCUOUS, 1000)) {
-                Pcap pcap = Pcap.openLive(device.getName(), 65536, Pcap.MODE_PROMISCUOUS, 1000, new StringBuilder());
-                pcap.loop(0, new PcapPacketHandler<String>() {
-                    @Override
-                    public void nextPacket(PcapPacket packet, String user) {
-                        processPacket(packet);
-                    }
-                }, "JNetPcap");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
-    private void processPacket(PcapPacket packet) {
-        // Implement packet processing logic here
-        // Extract source IP, source port, destination IP, destination port
-        // Call policyService to check access policy
-        // Decide to allow or block the request
-        // 创建一个 JPacket 对象来处理数据包
-        JPacket jPacket = packet;
-//        JPacket jPacket = packet.getHeader(new JPacket(packet.size()));
-
-        // 提取 IP 层信息
-        Ip4 ip = new Ip4();
-        if (!jPacket.hasHeader(ip)) {
-            return; // 不是 IP 数据包
-        }
-
-        String srcIp = ip.source().toString();
-        String dstIp = ip.destination().toString();
-
-        // 提取传输层信息（TCP 或 UDP）
-        boolean isTcp = jPacket.hasHeader(Tcp.ID);
-        boolean isUdp = jPacket.hasHeader(Udp.ID);
-
-        Integer srcPort = null;
-        Integer dstPort = null;
-
-        if (isTcp) {
-            Tcp tcp = new Tcp();
-            jPacket.getHeader(tcp);
-            srcPort = tcp.source(); // 直接获取 int 类型的端口号
-            dstPort = tcp.destination();
-        }
-
-        if (srcPort == null || dstPort == null) {
-            return; // 不是 TCP 数据包
-        }
-
-        System.out.printf("Captured packet: %s:%d -> %s:%d%n", srcIp, srcPort, dstIp, dstPort);
-
-        // 调用策略服务进行访问控制
-        boolean allowed = policyService.isAccessAllowed(srcIp, srcPort, dstIp, dstPort);
-
-        if (!allowed) {
-            System.out.printf("Blocked request from %s:%d to %s:%d%n", srcIp, srcPort, dstIp, dstPort);
-            // 在这里实现拒绝消息发送逻辑
-            sendDenialResponse(srcIp, srcPort, dstIp, dstPort);
-        }
+    private void processPacket() {
     }
 
     private void sendDenialResponse(String srcIp, int srcPort, String dstIp, int dstPort) {

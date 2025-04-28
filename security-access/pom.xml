@@ -46,20 +46,7 @@
 <!--            <groupId>jnetpcap</groupId>-->
 <!--            <artifactId>jnetpcap</artifactId>-->
 <!--        </dependency>-->
-        <dependency>
-            <groupId>jnetpcap</groupId>
-            <artifactId>jnetpcap</artifactId>
-            <systemPath>${project.basedir}/src/lib/jnetpcap-1.4.r1425-1g.jar</systemPath>
-            <version>1.4.r1425-1g</version>
-            <scope>system</scope>
-        </dependency>
+
     </dependencies>
-    <!-- jnetpcap抓包的maven配置 -->
-    <repositories>
-        <repository>
-            <id>Clojars</id>
-            <name>Clojars</name>
-            <url>https://clojars.org/repo/</url>
-        </repository>
-    </repositories>
+
 </project>

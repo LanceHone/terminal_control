@@ -308,9 +308,9 @@ public class AccessCtrlNetworkTcpController extends BaseController {
 
         String cmd;
         if (!enable) {
-            cmd = "iptables -D UDP_FLOOD_CHECK -m recent --name udprate --rcheck --seconds 1 --hitcount 11 -j DROP";
+            cmd = "iptables -D UDP_FLOOD_CHECK -m recent --name udprate --rcheck --seconds 1 --hitcount 9 -j DROP";
         } else {
-            cmd = "iptables -A UDP_FLOOD_CHECK -m recent --name udprate --rcheck --seconds 1 --hitcount 11 -j DROP";
+            cmd = "iptables -A UDP_FLOOD_CHECK -m recent --name udprate --rcheck --seconds 1 --hitcount 9 -j DROP";
         }
         logger.info(cmd);
         RuntimeUtil.execForStr(cmd);
