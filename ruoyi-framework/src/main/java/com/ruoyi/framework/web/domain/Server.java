@@ -155,23 +155,6 @@ public class Server
         });
 
         setSysFiles(si.getOperatingSystem());
-
-        if (System.getProperty("os.name").contains("Win")) {
-            // FOR TEST
-            clock.put("Time zone", "Asia/Shanghai");
-            clock.put("NTP service", "inactive");
-            clock.put("RTC in local TZ", "no");
-        } else {
-            List<String> timedatectl = RuntimeUtil.execForLines("timedatectl");
-            for (String line : timedatectl) {
-                if (line.contains(":")) {
-                    String[] parts = line.split(":");
-                    String key = parts[0].trim();
-                    String value = parts[1].trim();
-                    clock.put(key, value);
-                }
-            }
-        }
     }
 
     /**

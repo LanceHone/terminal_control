@@ -177,8 +177,7 @@ public class AccessMdbLogsController extends BaseController
     // @Scheduled(cron = "0/2 * * * * *")
     public void expired() {
         logger.info("清理过期数据");
-        // LocalDateTime localDateTime = LocalDateTime.now().minusDays(183);
-        LocalDateTime localDateTime = LocalDateTime.now().minusMinutes(10);//fixme 发布时候修改
+        LocalDateTime localDateTime = LocalDateTime.now().minusDays(183);
         accessMdbLogsMapper.deleteBefore(localDateTime);
     }
 

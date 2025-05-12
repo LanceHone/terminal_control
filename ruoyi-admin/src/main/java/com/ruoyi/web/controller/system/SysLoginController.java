@@ -1,28 +1,30 @@
 package com.ruoyi.web.controller.system;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.ruoyi.access.mapper.AccessCtlLogsMapper;
 import com.ruoyi.access.mapper.AccessMdbLogsMapper;
-import com.ruoyi.framework.web.service.SysLoginService;
-import com.ruoyi.system.service.ISysDictDataService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.entity.SysMenu;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.model.auth.LoginBody;
 import com.ruoyi.common.core.domain.model.auth.LoginUser;
 import com.ruoyi.common.utils.SecurityUtils;
-//import com.ruoyi.framework.web.service.SysLoginService;
+import com.ruoyi.framework.web.service.SysLoginService;
 import com.ruoyi.framework.web.service.SysPermissionService;
 import com.ruoyi.framework.web.service.TokenService;
+import com.ruoyi.system.service.ISysDictDataService;
 import com.ruoyi.system.service.ISysMenuService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 登录验证
@@ -104,6 +106,9 @@ public class SysLoginController
         } else if (3.7 + (mdb * 0.03542857142) > threshold) {
             ajax.put("logSizeMsg", "modbus日志已经达到阈值，请处理");
         }
+        LocalDate lastUpdated = user.getPasswordUpdatedTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().toLocalDate();
+        long between = ChronoUnit.DAYS.between(lastUpdated, LocalDate.now());
+        ajax.put("pwdReset", "密码剩余有效期：" + (180 - between) + "天");
         return ajax;
     }
 

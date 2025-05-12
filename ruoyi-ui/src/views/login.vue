@@ -2,7 +2,14 @@
   <div class="login">
     <el-form v-if="pwdReset" ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" :disabled="globalLocking" >
 <!--    <el-form v-if="pwdReset" ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" >-->
-      <h3 class="title">工控网络隔离装置</h3>
+      <h3 class="title">
+        <el-image
+          style="width: 28px; height: 28px"
+          :src="url"
+          fit="fill">
+        </el-image>
+        工控网络隔离装置
+      </h3>
       <el-form-item prop="username">
         <el-input
           v-model="loginForm.username"
@@ -38,7 +45,7 @@
           <img :src="codeUrl" @click="getCode" class="login-code-img"/>
         </div>
       </el-form-item>
-      <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>
+      <!-- <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox> -->
       <el-form-item style="width:100%;">
         <el-button
           :loading="loading"
@@ -67,7 +74,7 @@
 
     <!--  底部  -->
     <div class="el-login-footer">
-      <span>Copyright © 2018-2025 ruoyi.vip All Rights Reserved.</span>
+      <!-- <span>Copyright © 2018-2025 ruoyi.vip All Rights Reserved.</span> -->
     </div>
   </div>
 </template>
@@ -77,6 +84,7 @@ import { getCodeImg, globalLocked } from '@/api/login'
 import Cookies from 'js-cookie'
 import { encrypt, decrypt } from '@/utils/jsencrypt'
 import resetPwd from '@/views/system/user/profile/resetPwd.vue'
+import logoImg from '@/assets/logo/logo1.png'
 
 export default {
   name: 'Login',
@@ -86,8 +94,9 @@ export default {
       pwdReset: true,
       pwdResetTitle: '',
       codeUrl: '',
+      url: logoImg,
       loginForm: {
-        username: 'admin',
+        username: '',
         password: '',
         rememberMe: false,
         code: '',
@@ -242,6 +251,9 @@ export default {
   margin: 0px auto 30px auto;
   text-align: center;
   color: #707070;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .login-form {

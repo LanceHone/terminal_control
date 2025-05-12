@@ -27,7 +27,7 @@ public class SysPasswordService
     @Value(value = "3")
     private int maxRetryCount;
 
-    @Value(value = "1")//fixme 发布时修改
+    @Value(value = "15")//fixme 发布时修改
     private int lockTime;
 
     /**

@@ -9,17 +9,18 @@ export function getServer() {
 }
 
 // 获取服务信息
-export function timeSync() {
+export function timeSync(data) {
   return request({
-    url: '/monitor/server/time/sync?time=' + new Date().toISOString(),
-    method: 'post'
+    url: '/monitor/server/time/sync',
+    method: 'post',
+    data
   })
 }
 
 // 获取服务信息
-export function setTimezone() {
+export function getClockInfo() {
   return request({
-    url: '/monitor/server/time/setTz/',
-    method: 'post'
+    url: '/monitor/server/time',
+    method: 'get'
   })
 }

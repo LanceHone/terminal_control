@@ -4,7 +4,7 @@
     <el-dialog title="系统更新" :visible.sync="upload_popup">
 
       <el-upload ref="upload" :limit="1" :action="upload.url" :headers="upload.headers" :file-list="upload.fileList" :data="{'md5':md5}" accept=".zip"
-        :on-progress="handleFileUploadProgress" :on-success="handleFileSuccess" :auto-upload="false" :on-error="upload.isUploading=false">
+        :on-progress="handleFileUploadProgress" :on-success="handleFileSuccess" :auto-upload="false" :on-error="() => upload.isUploading=false">
         <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
       </el-upload>
       <el-input v-model="md5" autocomplete="off" style="margin-top: 30px;"></el-input>
@@ -24,61 +24,6 @@
             <el-button size="mini" icon="el-icon-upload" plain @click="upload_popup = true">产品升级</el-button>
           </p>
         </div>
-      </el-col>
-
-      <el-col :span="24" class="card-box">
-        <el-card>
-          <div slot="header">
-            <span><i class="el-icon-time"></i> 系统时间</span>
-            <el-button style="float: right; padding: 3px 0" @click="onSyncChange" type="text">开启同步</el-button>
-            <el-button style="float: right; padding: 3px 50px;margin: 0 30px" @click="onSetTz"
-              type="text">使用中国时区</el-button>
-
-          </div>
-
-          <div class="el-table el-table--enable-row-hover el-table--medium">
-            <table cellspacing="0" style="width: 100%">
-              <thead>
-                <tr>
-                  <th class="el-table__cell el-table__cell is-leaf">
-                    <div class="cell">本地时间</div>
-                  </th>
-                  <th class="el-table__cell el-table__cell is-leaf">
-                    <div class="cell">UTC时间</div>
-                  </th>
-                  <th class="el-table__cell el-table__cell is-leaf">
-                    <div class="cell">RTC时间</div>
-                  </th>
-                  <th class="el-table__cell el-table__cell is-leaf">
-                    <div class="cell">时区</div>
-                  </th>
-                  <th class="el-table__cell el-table__cell is-leaf">
-                    <div class="cell">NTP可用</div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody v-if="server.clock">
-                <tr>
-                  <td class="el-table__cell is-leaf">
-                    <div class="cell">{{ server.clock["Local time"] }}</div>
-                  </td>
-                  <td class="el-table__cell is-leaf">
-                    <div class="cell">{{ server.clock["Universal time"] }}</div>
-                  </td>
-                  <td class="el-table__cell is-leaf">
-                    <div class="cell">{{ server.clock["RTC time"] }}</div>
-                  </td>
-                  <td class="el-table__cell is-leaf">
-                    <div class="cell">{{ server.clock["Time zone"] }}</div>
-                  </td>
-                  <td class="el-table__cell is-leaf">
-                    <div class="cell">{{ server.clock["NTP enabled"] || server.clock['NTP service'] }}</div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </el-card>
       </el-col>
 
       <el-col :span="12" class="card-box">
@@ -521,12 +466,12 @@ export default {
     getList() {
       getServer().then((response) => {
         this.server = response.data;
-        this.$modal.closeLoading();
+        // this.$modal.closeLoading();
       });
     },
     // 打开加载层
     openLoading() {
-      this.$modal.loading("正在加载服务监控数据，请稍候！");
+      // this.$modal.loading("正在加载服务监控数据，请稍候！");
     },
     onSyncChange() {
       this.$modal.confirm("设置打开NTP同步？").then(() => {
@@ -562,11 +507,16 @@ export default {
     handleFileSuccess(response, file, fileList) {
       if (response.code != 200) {
         this.$modal.msgError(response.msg);
-      } else {
-        this.form.filePath = response.url;
-        this.msgSuccess(response.msg);
       }
       this.upload.isUploading = false;
+      this.upload_popup = false
+      clearInterval(this.intervalID);
+      this.$modal.loading("正在重启，请稍候！");
+      setTimeout(() => {
+        this.$modal.msgSuccess("重启成功");
+        this.$modal.closeLoading();
+        this.$router.push({ path: "/login" });
+      }, 1000 * 40);
     },
 
     cancel() {

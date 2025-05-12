@@ -2,16 +2,19 @@
   <div class="app-container home">
     <el-row :gutter="20">
       <el-col :sm="24" :lg="12" style="padding-left: 20px">
-        <h2>工控网络隔离装置</h2>
-<!--        <p>-->
-<!--          <el-button-->
-<!--            size="mini"-->
-<!--            icon="el-icon-s-home"-->
-<!--            plain-->
-<!--            @click="goTarget('http://ruoyi.vip')"-->
-<!--            >访问主页</el-button-->
-<!--          >-->
-<!--        </p>-->
+
+        
+        <h2>工控网络隔离装置iGAP-GW</h2>
+       <p>
+        <b>制造企业：</b>国家管网集团北京管道有限公司<br />
+        <b>产品名：</b>工控网络隔离装置iGAP-GW<br />
+        <b>版本：</b>{{ version }}<br />
+        <!-- <b>产品类型：</b>网络隔离装置<br />
+        <b>产品型号：</b>iGAP-GW<br />
+        <b>产品编号：</b>iGAP-GW-4.5.02<br />
+        <b>发布日期：</b>2023年10月10日<br />
+        <b>产品网址：</b><a href="https://www.bjpipe.com/" target="_blank">https://www.b -->
+       </p>
       </el-col>
 
     </el-row>
@@ -24,7 +27,7 @@ export default {
   data() {
     return {
       // 版本号
-      version: "3.8.9"
+      version: "4.5.02",
     };
   },
   methods: {

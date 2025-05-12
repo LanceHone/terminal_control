@@ -83,6 +83,12 @@ const user = {
               message: res.logSizeMsg,
             });
           }
+          if (res.pwdReset) {
+            Notification.warning({
+              title: '警告',
+              message: res.pwdReset,
+            });
+          }
           resolve(res)
         }).catch(error => {
           reject(error)

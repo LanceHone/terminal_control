@@ -1,5 +1,8 @@
 #!/bin/bash
 
+systemctl enable --now chronyd
+timedatectl set-ntp true
+
 # 设置日志文件路径
 LOG_FILE="/var/access/acc_ctl.log"
 

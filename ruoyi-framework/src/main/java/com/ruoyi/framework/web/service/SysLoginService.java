@@ -77,7 +77,7 @@ public class SysLoginService {
      */
     public Map login(String username, String password, String code, String uuid) {
         // 验证码校验
-        // validateCaptcha(username, code, uuid);
+        validateCaptcha(username, code, uuid);
         // 检查是否被锁定
         if (isUserLocked(username)) {//Fixme
             throw new LockedException("账户已被锁定，请稍后再试！");
@@ -146,8 +146,8 @@ public class SysLoginService {
         }
 
         LocalDateTime lastUpdated = user.getPasswordUpdatedTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        // return lastUpdated.plusDays(UserConstants.PASSWORD_EXPIRATION_DAYS).isBefore(LocalDateTime.now());//fixme 发布时使用这一行
-        return lastUpdated.plusSeconds(UserConstants.PASSWORD_EXPIRATION_DAYS).isBefore(LocalDateTime.now());
+        return lastUpdated.plusDays(UserConstants.PASSWORD_EXPIRATION_DAYS).isBefore(LocalDateTime.now());//fixme 发布时使用这一行
+        // return lastUpdated.plusSeconds(UserConstants.PASSWORD_EXPIRATION_DAYS).isBefore(LocalDateTime.now());
     }
 
     private boolean isUserLocked(String username) {
