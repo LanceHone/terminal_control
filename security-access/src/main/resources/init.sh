@@ -39,7 +39,7 @@ iptables -F ICMP_FLOOD_CHECK
 # Ddos fixme 发布时修改
 iptables -A SYN_FLOOD_CHECK -m recent --name synrate --rcheck --seconds 1 --hitcount 6 -j LOG --log-prefix "[SYN_FLOOD] " --log-level 4
 iptables -A SYN_FLOOD_CHECK -m recent --name synrate --set
-iptables -A UDP_FLOOD_CHECK -m recent --name udprate --rcheck --seconds 1 --hitcount 11 -j LOG --log-prefix "[UDP_FLOOD] " --log-level 4
+iptables -A UDP_FLOOD_CHECK -m recent --name udprate --rcheck --seconds 1 --hitcount 9 -j LOG --log-prefix "[UDP_FLOOD] " --log-level 4
 iptables -A UDP_FLOOD_CHECK -m recent --name udprate --set
 iptables -A ICMP_FLOOD_CHECK -m recent --name icmprate --rcheck --seconds 1 --hitcount 11 -j LOG --log-prefix "[ICMP_FLOOD] " --log-level 4
 iptables -A ICMP_FLOOD_CHECK -m recent --name icmprate --set
