@@ -8,7 +8,9 @@
           :src="url"
           fit="fill">
         </el-image>
-        工控网络隔离装置
+        <div style="height: 28px; line-height: 30px; margin-left: 10px;">
+          工控网络隔离装置
+        </div>
       </h3>
       <el-form-item prop="username">
         <el-input
