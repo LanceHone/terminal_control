@@ -95,8 +95,8 @@ def write_log(message):
 def ModBusFilter(data):
     f = ModBusDataFrame(data)
     log_message = f"TID={f.tid},PID={f.pid},LEN={f.len},UID={f.uid},FUNC={f.fid},ADDR={f.addr},NUMBER={f.number}"
-    print(log_message)
-    # print(f.config)
+    print("debug",log_message,f.dataArray)
+    print(f.config)
     if not f.config:
         return data
     rules = f.config["data"]
@@ -118,16 +118,16 @@ def ModBusFilter(data):
                 r_range = r["registerAddress"].split("~")
                 v_range = r["valueRange"].split("~")
                 data = f.dataArray
-                if start <= int(r_range[1]) and end >= int(r_range[0]):
-                    # 存在重叠
-                    # 把非法的值替换为0
-                    for i in range(len(data)):
-                        if int(r_range[0]) <= start + i and int(r_range[1]) >= start + i:
-                            data[i] = 0
-                        elif data[i] > int(v_range[1]) or data[i] < int(v_range[0]):
-                            data[i] = 0
-                        write_log(f"{log_message},type=PASS")
-                        return data
+                #if start <= int(r_range[1]) and end >= int(r_range[0]):
+                # 存在重叠
+                # 把非法的值替换为0
+                for i in range(len(data)):
+                    if start + i < int(r_range[0]) or start + i > int(r_range[1]):
+                        data[i] = 0
+                    if int(data[i]) < int(v_range[0]) or int(data[i]) > int(v_range[1]):
+                        data[i] = 0
+                write_log(f"{log_message},type=PASS")
+                return f.build()
         else:
             if (int(r['rw']) == 1 and int(r['functionCode']) == 3):
                 r_range = r["registerAddress"].split("~")

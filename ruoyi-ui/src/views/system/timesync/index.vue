@@ -52,7 +52,7 @@
         <el-card class="card" shadow="hover">
             <div class="card-header" style="margin-bottom: 20px;">时间同步</div>
             <div class="card-body" v-for="(item, index) in dict.type.ntp_server" :key="index">
-                <el-form label-width="120px" ref="formRef"  size="small">
+                <el-form label-width="120px" ref="formRef" size="small">
                     <el-form-item label="时间服务器">
                         <el-input v-model="item.value" placeholder="服务器地址"></el-input>
                     </el-form-item>

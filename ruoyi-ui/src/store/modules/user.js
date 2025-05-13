@@ -81,12 +81,14 @@ const user = {
             Notification.warning({
               title: '警告',
               message: res.logSizeMsg,
+              type: 'warning'
             });
           }
           if (res.pwdReset) {
             Notification.warning({
               title: '警告',
               message: res.pwdReset,
+              type: 'warning'
             });
           }
           resolve(res)

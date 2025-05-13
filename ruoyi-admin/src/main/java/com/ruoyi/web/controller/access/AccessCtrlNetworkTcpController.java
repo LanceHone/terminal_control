@@ -275,9 +275,9 @@ public class AccessCtrlNetworkTcpController extends BaseController {
     public AjaxResult ping(@PathVariable Boolean enable) {
         String cmd;
         if (!enable) {
-            cmd = "iptables -D INPUT -p icmp --icmp-type echo-request -m length --length 100:65535 -j DROP";
+            cmd = "iptables -D INPUT -p icmp --icmp-type echo-request -m length --length 29:65535 -j DROP";
         } else {
-            cmd = "iptables -I INPUT 1 -p icmp --icmp-type echo-request -m length --length 100:65535 -j DROP";
+            cmd = "iptables -I INPUT 1 -p icmp --icmp-type echo-request -m length --length 29:65535 -j DROP";
         }
         logger.info(cmd);
         RuntimeUtil.execForStr(cmd);

@@ -145,7 +145,7 @@ public class AccessCtlLogsController extends BaseController
         if (!file.exists()) return;
 
         int currentYear = Year.now().getValue();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy MMM dd HH:mm:ss", Locale.ENGLISH);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy MMM d HH:mm:ss", Locale.ENGLISH);
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
@@ -156,7 +156,7 @@ public class AccessCtlLogsController extends BaseController
                 Matcher matcher = pattern.matcher(line);
 
                 if (matcher.find()) {
-                    ctlLog.setTs(LocalDateTime.parse(currentYear + " " + matcher.group(1), formatter));
+                    ctlLog.setTs(LocalDateTime.parse(currentYear + " " + matcher.group(1).replaceAll("\\s+", " "), formatter));
                     ctlLog.setHost(matcher.group(2));
                     ctlLog.setModule(matcher.group(3));
                     ctlLog.setAction(matcher.group(4));
@@ -198,5 +198,59 @@ public class AccessCtlLogsController extends BaseController
         logger.info("清理过期数据");
         LocalDateTime localDateTime = LocalDateTime.now().minusDays(183);//fixme 发布时候修改
         accessCtlLogsMapper.deleteBefore(localDateTime);
+    }
+
+
+    public static void main(String[] args)  {
+        File file = new File("ctl.log");
+
+        if (!file.exists()) return;
+
+        int currentYear = Year.now().getValue();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy MMM d HH:mm:ss", Locale.ENGLISH);
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                AccessCtlLogs ctlLog = new AccessCtlLogs();
+                // 正则提取前面的时间戳、主机名和模块
+                Pattern pattern = Pattern.compile("^(\\w+\\s+\\d+\\s+\\d+:\\d+:\\d+)\\s+(\\S+)\\s+(\\S+):\\s+\\[(\\w+)]\\s+(.*)$");
+                Matcher matcher = pattern.matcher(line);
+
+                if (matcher.find()) {
+                    ctlLog.setTs(LocalDateTime.parse(currentYear + " " + matcher.group(1).replaceAll("\\s+", " "), formatter));
+                    ctlLog.setHost(matcher.group(2));
+                    ctlLog.setModule(matcher.group(3));
+                    ctlLog.setAction(matcher.group(4));
+
+                    // 解析 key=value 部分
+                    String keyValuePart = matcher.group(5);
+
+                    Map<String, String> fields = new LinkedHashMap<>();
+
+                    Matcher kvMatcher = Pattern.compile("(\\w+)=([^\\s]*)").matcher(keyValuePart);
+                    while (kvMatcher.find()) {
+                        fields.put(kvMatcher.group(1), kvMatcher.group(2));
+                    }
+                    ctlLog.setMac(fields.get("MAC"));
+                    ctlLog.setSrc(fields.get("SRC"));
+                    ctlLog.setDst(fields.get("DST"));
+                    ctlLog.setSpt(fields.get("SPT"));
+                    ctlLog.setDpt(fields.get("DPT"));
+                    System.out.println("ctlLog = " + ctlLog);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        // 清空文件内容
+        try (BufferedWriter writer = Files.newBufferedWriter(file.toPath(), StandardOpenOption.TRUNCATE_EXISTING)) {
+            // 写入空字符串即可清空
+            writer.write("");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

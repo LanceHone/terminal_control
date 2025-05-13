@@ -48,12 +48,11 @@ iptables -A INPUT -p tcp --syn -j SYN_FLOOD_CHECK
 iptables -A INPUT -p udp -j UDP_FLOOD_CHECK
 iptables -A INPUT -p icmp --icmp-type echo-request -j ICMP_FLOOD_CHECK
 
-iptables -A INPUT -p icmp --icmp-type echo-request -m length --length 100:65535 -j LOG --log-prefix "[PING_OF_DEATH] " --log-level 4
+iptables -A INPUT -p icmp --icmp-type echo-request -m length --length 29:65535 -j LOG --log-prefix "[PING_OF_DEATH] " --log-level 4
 
 # 直接放行
 iptables -A INPUT -p tcp --dport 443 -j ACCEPT
 iptables -A INPUT -p tcp --dport 19268 -j ACCEPT
-iptables -A INPUT -p tcp --dport 37399 -j ACCEPT
 iptables -A INPUT -p tcp --dport 8200 -j ACCEPT
 iptables -A INPUT -p tcp --dport 22 -j ACCEPT
 iptables -A INPUT -p tcp --dport 33066 -j ACCEPT

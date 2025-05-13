@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * 服务器监控
@@ -38,16 +39,15 @@ public class ServerController {
     @GetMapping("/time")
     public AjaxResult now() throws Exception {
         AjaxResult ret = AjaxResult.success();
-        // List<String> timedatectl = RuntimeUtil.execForLines("timedatectl");
-        // for (String line : timedatectl) {
-        //     if (line.contains(":")) {
-        //         String[] parts = line.split(":");
-        //         String key = parts[0].trim();
-        //         String value = parts[1].trim();
-        //         ret.put(key, value);
-        //     }
-        // }
-        ret.put("test", "test");
+        List<String> timedatectl = RuntimeUtil.execForLines("timedatectl");
+        for (String line : timedatectl) {
+            if (line.contains(":")) {
+                String[] parts = line.split(":");
+                String key = parts[0].trim();
+                String value = parts[1].trim();
+                ret.put(key, value);
+            }
+        }
         return ret;
     }
 
@@ -58,8 +58,17 @@ public class ServerController {
     @Log(title = "系统时间同步设置", businessType = BusinessType.UPDATE)
     public AjaxResult syncSwitch(@RequestBody SysDictData dictData) throws Exception {
         dictDataService.updateDictData(dictData);
-        RuntimeUtil.execForStr("echo 'server " + dictData.getDictValue() + " iburst' > /etc/chrony/sources.d/local-ntp-server.sources");
-        RuntimeUtil.execForStr("chronyc reload sources");
+        // RuntimeUtil.execForStr("echo 'server " + dictData.getDictValue() + " iburst' > /etc/chrony/sources.d/local-ntp-server.sources");
+        // RuntimeUtil.execForStr("systemctl restart chronyd");
+        // RuntimeUtil.execForStr("chronyc makestep");
+
+        Process exec = RuntimeUtil.exec("ntpdate -u " + dictData.getDictValue());
+        int i = exec.waitFor();
+        if (i != 0) {
+            return AjaxResult.error("设置失败");
+        }
+        RuntimeUtil.execForStr("hwclock --systohc");
+
         return AjaxResult.success("设置成功");
     }
 
