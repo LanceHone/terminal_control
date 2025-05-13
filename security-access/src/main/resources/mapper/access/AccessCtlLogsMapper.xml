@@ -36,6 +36,7 @@
             <if test="host != null  and host != ''"> and host = #{host}</if>
             <if test="mac != null  and mac != ''"> and mac = #{mac}</if>
         </where>
+        order by ts DESC
     </select>
 
     <select id="selectAccessCtlLogsById" parameterType="Long" resultMap="AccessCtlLogsResult">

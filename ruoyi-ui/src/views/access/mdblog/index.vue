@@ -1,69 +1,27 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="时间" prop="ts">
-        <el-date-picker clearable
-          v-model="queryParams.ts"
-          type="datetime"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          placeholder="请选择时间">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="tid" prop="tid">
-        <el-input
-          v-model="queryParams.tid"
-          placeholder="请输入tid"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="pid" prop="pid">
-        <el-input
-          v-model="queryParams.pid"
-          placeholder="请输入pid"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+
+      <el-form-item label="类型" prop="type">
+        <el-select v-model="queryParams.type" placeholder="请选择" @keyup.enter.native="handleQuery">
+          <el-option key="ACCEPT" label="通过" value="PASS"></el-option>
+          <el-option key="REJECT" label="拒绝" value="REJECT"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="长度" prop="len">
-        <el-input
-          v-model="queryParams.len"
-          placeholder="请输入长度"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+        <el-input v-model="queryParams.len" placeholder="请输入长度" clearable @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item label="设备id" prop="uid">
-        <el-input
-          v-model="queryParams.uid"
-          placeholder="请输入设备id"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+        <el-input v-model="queryParams.uid" placeholder="请输入设备id" clearable @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item label="功能码" prop="func">
-        <el-input
-          v-model="queryParams.func"
-          placeholder="请输入功能码"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+        <el-input v-model="queryParams.func" placeholder="请输入功能码" clearable @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item label="操作对象" prop="addr">
-        <el-input
-          v-model="queryParams.addr"
-          placeholder="请输入操作对象"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+        <el-input v-model="queryParams.addr" placeholder="请输入操作对象" clearable @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item label="操作值" prop="number">
-        <el-input
-          v-model="queryParams.number"
-          placeholder="请输入操作值"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+        <el-input v-model="queryParams.number" placeholder="请输入操作值" clearable @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -94,24 +52,12 @@
         >修改</el-button>
       </el-col> -->
       <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-delete"
-          size="mini"
-          @click="handleDelete"
-          v-hasPermi="['access:logs:remove']"
-        >清空</el-button>
+        <el-button type="danger" plain icon="el-icon-delete" size="mini" @click="handleDelete"
+          v-hasPermi="['access:logs:remove']">清空</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button
-          type="warning"
-          plain
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-          v-hasPermi="['access:logs:export']"
-        >导出</el-button>
+        <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport"
+          v-hasPermi="['access:logs:export']">导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
@@ -145,16 +91,11 @@
             v-hasPermi="['access:logs:remove']"
           >删除</el-button>
         </template>
-      </el-table-column> -->
+</el-table-column> -->
     </el-table>
-    
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
+
+    <pagination v-show="total > 0" :total="total" :page.sync="queryParams.pageNum" :limit.sync="queryParams.pageSize"
+      @pagination="getList" />
 
     <!-- 添加或修改modbus控制日志对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
@@ -193,7 +134,7 @@
 </template>
 
 <script>
-import { listLogs, getLogs, delLogs, addLogs, updateLogs,clear } from "@/api/access/indu/logs";
+import { listLogs, getLogs, delLogs, addLogs, updateLogs, clear } from "@/api/access/indu/logs";
 
 export default {
   name: "Logs",
@@ -285,7 +226,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id)
-      this.single = selection.length!==1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
@@ -327,12 +268,12 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$modal.confirm('是否确认清空？').then(function() {
+      this.$modal.confirm('是否确认清空？').then(function () {
         return clear();
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
-      }).catch(() => {});
+      }).catch(() => { });
     },
     /** 导出按钮操作 */
     handleExport() {

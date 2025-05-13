@@ -34,6 +34,7 @@
             <if test="addr != null  and addr != ''"> and addr = #{addr}</if>
             <if test="number != null  and number != ''"> and number = #{number}</if>
         </where>
+        order by ts DESC
     </select>
 
     <select id="selectAccessMdbLogsById" parameterType="Long" resultMap="AccessMdbLogsResult">

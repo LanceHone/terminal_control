@@ -106,9 +106,13 @@ public class SysLoginController
         } else if (3.7 + (mdb * 0.03542857142) > threshold) {
             ajax.put("logSizeMsg", "modbus日志已经达到阈值，请处理");
         }
-        LocalDate lastUpdated = user.getPasswordUpdatedTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().toLocalDate();
-        long between = ChronoUnit.DAYS.between(lastUpdated, LocalDate.now());
-        ajax.put("pwdReset", "密码剩余有效期：" + (180 - between) + "天");
+        if (user.getPasswordUpdateTime() == null) {
+            ajax.put("pwdReset", "密码剩余有效期：180天");
+        }else {
+            LocalDate lastUpdated = user.getPasswordUpdatedTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().toLocalDate();
+            long between = ChronoUnit.DAYS.between(lastUpdated, LocalDate.now());
+            ajax.put("pwdReset", "密码剩余有效期：" + (180 - between) + "天");
+        }
         return ajax;
     }
 
